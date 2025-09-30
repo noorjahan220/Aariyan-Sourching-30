@@ -3,7 +3,7 @@ import React from 'react';
 
 const useAxiosPublic = () => {
     const axiosPublic = axios.create({
-       baseURL: 'http://srv863654.hstgr.cloud/',
+       baseURL: 'https://api.aaryansourcing.com/',
     })
     return  axiosPublic;
 };

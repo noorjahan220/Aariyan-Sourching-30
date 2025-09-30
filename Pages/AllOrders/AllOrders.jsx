@@ -15,7 +15,7 @@ const AllOrders = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedStyle, setSelectedStyle] = useState("all");
 
-  const API_BASE_URL = "http://srv863654.hstgr.cloud";
+  const API_BASE_URL = "https://api.aaryansourcing.com";
   const axiosSecure = useAxiosSecure();
 
   useEffect(() => {

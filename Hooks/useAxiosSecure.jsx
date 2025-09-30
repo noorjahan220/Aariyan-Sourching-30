@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 const useAxiosSecure = () => {
   const axiosSecure = useMemo(() => {
     return axios.create({
-    baseURL: 'http://srv863654.hstgr.cloud/',
+    baseURL: 'https://api.aaryansourcing.com/',
     });
   }, []);
 
