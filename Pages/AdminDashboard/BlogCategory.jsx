@@ -18,7 +18,7 @@ const BlogCategory = () => {
 
   useEffect(() => {
     const fetchCategories = async () => {
-      const res = await axios.get("http://localhost:5000/categories");
+      const res = await axios.get("http://srv863654.hstgr.cloud/categories");
       setCategories(res.data);
       setLoading(false);
     };
@@ -26,14 +26,14 @@ const BlogCategory = () => {
   }, []);
 
   const handleAddCategory = async (newValue) => {
-    const res = await axios.post("http://localhost:5000/categories", { value: newValue });
+    const res = await axios.post("http://srv863654.hstgr.cloud/categories", { value: newValue });
     if (res.data.insertedId) {
       setCategories(prev => [...prev, { _id: res.data.insertedId, value: newValue }]);
     }
   };
 
   const handleDeleteCategory = async (id) => {
-    await axios.delete(`http://localhost:5000/categories/${id}`);
+    await axios.delete(`http://srv863654.hstgr.cloud/categories/${id}`);
     setCategories(prev => prev.filter(cat => cat._id !== id));
     toast.success("Category deleted successfully!", { duration: 2000 })
   };

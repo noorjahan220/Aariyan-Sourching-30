@@ -35,7 +35,7 @@ export default function AddressContent() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('http://localhost:5000/address', formData);
+      const res = await axios.post('http://srv863654.hstgr.cloud/address', formData);
       console.log('Saved:', res.data);
       alert('Address saved successfully!');
     } catch (err) {
