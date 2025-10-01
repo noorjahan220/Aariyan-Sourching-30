@@ -50,11 +50,26 @@ const HamburgerIcon = ({ className }) => (<svg className={className} stroke="cur
 const CloseIcon = ({ className }) => (<svg className={className} stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>);
 const ArrowLeftIcon = ({ className }) => (<svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5"></path><path d="M12 19l-7-7 7-7"></path></svg>);
 const MenuIcon = ({ className }) => (<svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>);
-
+const PageIcon = ({ className }) => (
+  <svg 
+    className={className} 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    stroke="currentColor" 
+    strokeWidth="1.5" 
+    strokeLinecap="round" 
+    strokeLinejoin="round"
+  >
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+    <polyline points="14 2 14 8 20 8"></polyline>
+    <line x1="16" y1="13" x2="8" y2="13"></line>
+    <line x1="16" y1="17" x2="8" y2="17"></line>
+  </svg>
+);
 // --- Nav Items ---
 const sidebarNavItems = [
     { name: 'Dashboard', icon: DashboardIcon },
-    { name: 'Pages', icon: DashboardIcon, children: [{ name: 'Home' }, { name: 'Size Guide' }] },
+    { name: 'Pages', icon: PageIcon, children: [{ name: 'Home' }, { name: 'Size Guide' }] },
     { name: 'Products', icon: ProductsIcon, children: [{ name: 'All Products' }, { name: 'Add Product' }] },
     { name: 'Product Management', icon: ProductManagementIcon, children: [{ name: 'Product Category' }, { name: 'Product Sub Category' }, { name: 'Product Color' }, { name: 'Product Fit' }, { name: 'Product Size ' },{ name: 'Product Brand' }, { name: 'Product Reviews' }] },
     { name: 'Orders', icon: OrderIcon, children: [{ name: 'All Orders' }] },
