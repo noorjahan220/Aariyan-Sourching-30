@@ -101,6 +101,11 @@ const Footer = () => {
                   Sustainability
                 </Link>
               </li>
+              <li>
+                <Link href="/FabricShowcase" className="hover:text-black">
+                  FabricShowcase
+                </Link>
+              </li>
             
             </ul>
           </div>

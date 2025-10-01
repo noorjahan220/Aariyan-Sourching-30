@@ -1,9 +1,6 @@
 "use client";
 import ResourceCard from "../../components/ResourceCard";
 import { useState } from "react";
-import { IoClose } from "react-icons/io5";
-import { BsTelephoneFill } from "react-icons/bs";
-import { MdEmail } from "react-icons/md";
 import AskAnyQuestionModal from "../../components/AskAnyQuestionModal";
 const ResourceGrid = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -90,7 +87,7 @@ const ResourceGrid = () => {
       image:
         "https://i.ibb.co/xK3SBqm9/Types-of-Fabric-Guide-to-Popular-Materials-for-Apparel.jpg",
       pdfUrl: "/LookBook-Image/Lookbook-final-14-9-25.pdf",
-      pageUrl: "/fabric",
+      pageUrl: "/FabricShowcase",
     },
   ];
   const openContactModal = () => {
