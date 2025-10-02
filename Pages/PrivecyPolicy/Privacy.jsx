@@ -175,7 +175,7 @@ const Privacy = () => {
                 11.2. If you: Have any questions or feedback about this notice; Would like us to stop using your information; Want to exercise any of your rights as set out above, or have a complaint;
               </p>
               <p className="leading-relaxed text-gray-500">
-                11.3. Please do not hesitate to contact our Customer Care team via email at contact@aaryansourcing.com; we will be happy to answer any questions you may have. <a href="mailto:contact@aasourcingltd.com" className="text-blue-600">contact@aasourcingltd.com</a>.
+                11.3. Please do not hesitate to contact our Customer Care team via email at contact@aaryansourcing.com; we will be happy to answer any questions you may have. 
               </p>
             </div>
 

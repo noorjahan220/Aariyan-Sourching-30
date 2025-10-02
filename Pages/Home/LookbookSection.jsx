@@ -19,6 +19,7 @@ const Hotspot = ({ position }) => (
 );
 
 const LookbookSection = () => {
+  const currentYear = new Date().getFullYear();
   const img_lookbook =
     "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?q=80&w=1887&auto=format&fit=crop";
   const img_product1 = "https://picsum.photos/seed/product1/400/400";
@@ -58,14 +59,18 @@ const LookbookSection = () => {
           </div>
 
           <div>
-            <h2 className="text-4xl font-light text-gray-800">Lookbook 2021</h2>
+            {/* 2. Use the variable in the h2 tag */}
+            <h2 className="text-4xl font-light text-gray-800">
+              {`Lookbook ${currentYear}`}
+            </h2>
             <div className="w-10 h-0.5 bg-gray-800 my-4"></div>
             <p className="text-gray-500 leading-relaxed max-w-md">
-              Discover the Aaryan Sourcing Lookbook 2025, showcasing the latest
+              {/* 3. Also update the paragraph for consistency */}
+              {`Discover the Aaryan Sourcing Lookbook ${currentYear}, showcasing the latest
               trends in wholesale sourcing and supply chain solutions. It
               features premium products and innovative sourcing strategies
               perfect for retailers and e-commerce businesses. Stay ahead of the
-              curve with our 2025 collection.
+              curve with our ${currentYear} collection.`}
             </p>
             <LookBooksectionsBtn products={products} />
             <div className="mt-8">

@@ -10,7 +10,7 @@ import {
 } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 
-const footerLogo = "/logo.png";
+const footerLogo = "/footerLogo.png";
 const appstoreURL = "https://i.ibb.co/nNpN7s6K/app-stor.webp";
 const googlePlayURL = "https://i.ibb.co/JWG1wS9N/google-play.webp";
 const paymentURL = "https://i.ibb.co/zVSbVxqC/payment.webp";
@@ -28,7 +28,7 @@ const Footer = () => {
     <footer className="w-full  bg-[#F6F6F6]">
       <div className="md:flex flex-wrap w-full max-w-6xl mx-auto px-4">
         <div className="w-full lg:w-[30%] py-10 sm:py-14 ">
-          <Image className="bg-[#F6F6F6]" src={footerLogo} alt="App Store" width={150} height={50} />
+          <Image className="bg-[#F6F6F6]" src={footerLogo} alt="App Store" width={250} height={100} />
 
           <h3 className="text-sm sm:text-base lg:text-[16px] font-semibold sub_title_color my-5 uppercase">
             QUESTION OR FEEDBACK?
@@ -75,7 +75,7 @@ const Footer = () => {
                 <div className="absolute top-0 w-12 h-0.5 bg-yellow-400 rounded"></div>
               </div>
             </div>
-            <ul className="text-xs sm:text-sm text-gray-600 space-y-2">
+            <ul className="text-xs  text-gray-700 space-y-2">
               <li>
                 <Link href="/about" className="hover:text-black">
                   About Us
@@ -119,7 +119,7 @@ const Footer = () => {
                 <div className="absolute top-0 w-12 h-0.5 bg-yellow-400 rounded"></div>
               </div>
             </div>
-            <ul className="text-xs sm:text-sm text-gray-600 space-y-2">
+            <ul className="text-xs  text-gray-700 space-y-2">
               <li>
                 <Link href="/service" className="hover:text-black">
                   Services
@@ -157,7 +157,7 @@ const Footer = () => {
                 <div className="absolute top-0 w-12 h-0.5 bg-yellow-400 rounded"></div>
               </div>
             </div>
-            <ul className="text-xs sm:text-sm text-gray-600 space-y-2">
+            <ul className="text-xs  text-gray-700 space-y-2">
               <li>
                 <Link href="/resource" className="hover:text-black">
                   Resources
@@ -195,7 +195,7 @@ const Footer = () => {
                 <div className="absolute top-0 w-12 h-0.5 bg-yellow-400 rounded"></div>
               </div>
             </div>
-            <ul className="text-xs sm:text-sm text-gray-600 space-y-2">
+            <ul className="text-xs  text-gray-700 space-y-2">
               <li>
                 <Link href="/Cookie" className="hover:text-black">
                   Cookie Policy
