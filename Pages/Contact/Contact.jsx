@@ -94,13 +94,13 @@ const Contact = () => {
                       </div>
                       <div>
                         <strong className="block font-medium text-gray-800 leading-tight">
-                          3963 Washburn Street,
+                          House #19, Road #07, Flat #5-A, Sector #10,
                         </strong>
                         <strong className="block font-medium text-gray-800 leading-tight">
-                          Baton Rouge, LA,
+                          Uttara Model Town, Dhaka -1230,
                         </strong>
                         <strong className="block font-medium text-gray-800 leading-tight">
-                          Louisiana -70806
+                          Bangladesh
                         </strong>
                       </div>
                     </div>
@@ -111,9 +111,12 @@ const Contact = () => {
                         <FaPhoneAlt />
                       </div>
                       <div>
-                        <strong className="block font-medium text-gray-800 leading-tight hover:text-[#f5b750]">
-                          +018 000 0000
-                        </strong>
+                        <a
+                          href="tel:+8801713117849"
+                          className="block font-medium text-gray-800 leading-tight hover:text-[#f5b750]"
+                        >
+                          +8801713117849
+                        </a>
                       </div>
                     </div>
                     <div className="flex items-start">
@@ -121,9 +124,12 @@ const Contact = () => {
                         <FaEnvelope />
                       </div>
                       <div>
-                        <strong className="block font-medium text-gray-800 leading-tight hover:text-[#f5b750]">
-                          support@ariya.com
-                        </strong>
+                        <a
+                          href="mailto:aaryansourcing@gmail.com"
+                          className="block font-medium text-gray-800 leading-tight hover:text-[#f5b750]"
+                        >
+                          aaryansourcing@gmail.com
+                        </a>
                       </div>
                     </div>
                   </div>
@@ -203,8 +209,9 @@ const Contact = () => {
               CONTACT US
             </h2>
           </div>
+
           <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!m12!m3!1d730103.5359740268!2d-90.41369592471694!3d44.51268673523491!2m3!1f0!2f0!3f0!3m2!i1024!2i768!4f13.1!3m3!1m2!1s0x88019b3a0f5a9947%3A0x629555f5f785856!2sGreen%20Bay%2C%20WI%2C%20USA!5e0!3m2!1sen!2sus!4v1684334323496!5m2!1sen!2sus"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3648.455243178044!2d90.3929450759325!3d23.87343608428801!2m3!1f0!2f0!3f0!3m2!i1024!2i768!4f13.1!3m3!1m2!1s0x3755c4323d00b177%3A0x25f828a2c2065f4c!2sH-19%2C%20R-7%2C%20Dhaka%201230!5e0!3m2!1sen!2sbd!4v1716298542918!5m2!1sen!2sbd"
             className="absolute inset-0 w-full h-full border-0"
             allowFullScreen=""
             loading="lazy"
