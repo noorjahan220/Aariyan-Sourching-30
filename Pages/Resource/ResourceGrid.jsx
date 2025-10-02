@@ -58,7 +58,7 @@ const ResourceGrid = () => {
       description: "Download detailed product sheets for our entire range.",
       image: "https://i.ibb.co/Q2wB13W/product-sheets.webp",
       pdfUrl: "/LookBook-Image/Lookbook-final-14-9-25.pdf",
-      pageUrl: "/productsheets",
+      pageUrl: "",
     },
     {
       id: 7,
@@ -78,7 +78,7 @@ const ResourceGrid = () => {
       image:
         "https://i.ibb.co/DfsTyKxx/Premium-Women-s-Black-Hoodie-Apparel-Exclusive-Style-Comfort.jpg",
       pdfUrl: "/LookBook-Image/Lookbook-final-14-9-25.pdf",
-      pageUrl: "/exclusive",
+      pageUrl: "",
     },
     {
       id: 9,
