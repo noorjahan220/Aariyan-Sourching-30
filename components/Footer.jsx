@@ -27,7 +27,7 @@ const Footer = () => {
   return (
     <footer className="w-full  bg-[#F6F6F6]">
       <div className="md:flex flex-wrap w-full max-w-6xl mx-auto px-4">
-        <div className="w-full lg:w-[30%] py-10 sm:py-14 ">
+        <div className=" w-full lg:w-[30%] py-10 sm:py-14 ">
           <Image className="bg-[#F6F6F6]" src={footerLogo} alt="App Store" width={250} height={100} />
 
           <h3 className="text-sm sm:text-base lg:text-[16px] font-semibold sub_title_color my-5 uppercase">

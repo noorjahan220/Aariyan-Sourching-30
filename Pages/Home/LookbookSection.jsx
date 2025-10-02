@@ -59,13 +59,13 @@ const LookbookSection = () => {
           </div>
 
           <div>
-            {/* 2. Use the variable in the h2 tag */}
+          
             <h2 className="text-4xl font-light text-gray-800">
               {`Lookbook ${currentYear}`}
             </h2>
             <div className="w-10 h-0.5 bg-gray-800 my-4"></div>
             <p className="text-gray-500 leading-relaxed max-w-md">
-              {/* 3. Also update the paragraph for consistency */}
+             
               {`Discover the Aaryan Sourcing Lookbook ${currentYear}, showcasing the latest
               trends in wholesale sourcing and supply chain solutions. It
               features premium products and innovative sourcing strategies

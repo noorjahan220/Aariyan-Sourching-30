@@ -56,13 +56,13 @@ const Testimonials = () => {
       <div className="container mx-auto px-4">
         
         <div className="text-center mb-5">
-          <h2 className="text-3xl lg:text-4xl font-semibold text-gray-800">Their Words, Our Pride</h2>
+          <h2 className="text-3xl lg:text-4xl font-semibold text-gray-800">Your Trust, Our Excellence</h2>
           <div className="flex justify-center items-center my-4 space-x-4">
             <div className="w-16 h-px bg-gray-300"></div>
             <IoDiamondOutline className="w-5 h-5 text-gray-700" />
             <div className="w-16 h-px bg-gray-300"></div>
           </div>
-          <p className="text-gray-500">Happy Words of our Happy Customers</p>
+          <p className="text-gray-500">Pride in Every Word You Share</p>
         </div>
 
         <div className="max-w-6xl mx-auto">
