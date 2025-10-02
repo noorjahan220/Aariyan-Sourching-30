@@ -45,7 +45,7 @@ const FabricShowcase = () => {
         breadcrumb="Fabric "
         backgroundImage={"/fabric/fabricbg.jpg"}
       />
-      <div className="max-w-6xl mx-auto px-4 lg:px-2 lg:mt-3 mt-4">
+      <div className="max-w-6xl mx-auto px-4 lg:px-2  py-16 sm:py-20">
         <div className="text-center">
           <h1 className="text-3xl md:text-4xl font-bold sub_title_color">
             Yarn & Fabric Types Guide

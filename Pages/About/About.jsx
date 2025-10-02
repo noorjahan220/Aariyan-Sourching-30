@@ -150,33 +150,36 @@ const About = () => {
     <main className="bg-white">
       <CommonBanner backgroundImage="/about-us.jpg" breadcrumb="About" />
 
-      <section className="max-w-6xl mx-auto px-4 lg:px-2 py-16 md:py-24 space-y-24 md:space-y-32">
-        <div className="space-y-24 md:space-y-32">
-          {AboutData.map((item) => (
-            <article key={item.id} className="flex flex-col gap-8">
-              <h2 className="text-2xl md:text-3xl font-bold text-gray-900 text-center md:text-left">
-                {item.title}
-              </h2>
-
-              <div className="relative overflow-hidden rounded-lg shadow-lg">
+      <section className="max-w-6xl mx-auto px-4 lg:px-2 py-16 md:py-24">
+        <div>
+          {AboutData.map((item, index) => (
+            <div
+              key={item.id}
+              className="grid grid-cols-1 lg:grid-cols-2 gap-10 bg-white mt-6 lg:mt-12 mb-10 lg:mb-20 items-center"
+            >
+              <div className="w-full aspect-video relative">
                 <Image
                   src={item.image}
                   alt={item.title}
-                  width={828}
-                  height={552}
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  className="w-full h-auto object-cover transition-transform duration-300 hover:scale-105"
+                  fill
+                  className="object-cover rounded-lg"
                   priority={item.id === 1}
                 />
               </div>
 
-              <div className="space-y-4">
-                <div className="w-20 h-1 bg-yellow-500 rounded-full"></div>
-                <p className="text-slate-700 text-base md:text-lg leading-relaxed text-justify">
+              <div
+                className={`w-full flex flex-col justify-center ${
+                  index % 2 !== 0 ? "" : "lg:order-first"
+                }`}
+              >
+                <h2 className="text-2xl lg:text-3xl font-semibold mb-6">
+                  {item.title}
+                </h2>
+                <p className="text-sm lg:text-base text-[#777777] text-justify leading-relaxed">
                   {item.description}
                 </p>
               </div>
-            </article>
+            </div>
           ))}
         </div>
       </section>
