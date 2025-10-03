@@ -87,9 +87,9 @@ export default function AddStaff({ onAddStaff }) {
   };
 
   return (
-    <div className="w-full my-7">
+    <div className="max-w-6xl my-7">
       <div className="bg-white rounded-xl">
-        <h2 className="text-2xl font-bold text-gray-800 mb-2">Add New Staff Member</h2>
+       
         <p className="text-gray-500 mb-6">Promote an existing user to a staff role by assigning specific permissions.</p>
 
         <form onSubmit={handleSubmit} className="space-y-8">

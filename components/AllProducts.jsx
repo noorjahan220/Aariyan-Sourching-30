@@ -42,13 +42,11 @@ const AllProducts = () => {
   if (isLoading) return <LoadingSpinner />;
 
   return (
-    <main className="w-full my-7">
+    <main className="max-w-6xl my-7">
 
-      <h1 className="text-2xl font-bold text-gray-800 mb-5">
-        All Products ({allFilterdProducts?.total || 0})
-      </h1>
+     
 
-      <section className="w-full flex flex-col sm:flex-row justify-between gap-4 mb-10 lg:mb-5">
+      <section className=" flex flex-col sm:flex-row justify-between gap-4 mb-10 lg:mb-5">
         {/* search */}
         <div className="flex items-center w-full sm:w-1/2 md:w-[60%] lg:w-[70%] border border-gray-300 rounded-lg px-4">
           <FaSearch className="text-gray-500 mr-2" />

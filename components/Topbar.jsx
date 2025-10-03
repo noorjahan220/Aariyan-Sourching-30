@@ -21,11 +21,11 @@ const Topbar = () => {
         <div className="flex items-center space-x-6">
           <div className="flex items-center">
             <PhoneIcon />
-            <span>+018 900 6690</span>
+            <span>+8801713117849</span>
           </div>
           <div className="flex items-center">
             <MailIcon />
-            <span>support@ariya.com</span>
+            <span>aaryansourcing@gmail.com </span>
           </div>
         </div>
         <div className="hidden md:flex items-center space-x-6">

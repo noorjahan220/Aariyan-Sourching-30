@@ -49,11 +49,9 @@ const AddProductReviews = () => {
   const labelStyle = "block text-sm font-medium text-gray-700 mb-1";
 
   return (
-    <div className="w-full mt-7">
-      <div className="">
-        <h1 className="text-2xl font-bold text-gray-800 lg:mb-5">
-          Add Product Review
-        </h1>
+    <div className="max-w-6xl my-7">
+      <div >
+       
 
         <form
           onSubmit={handleSubmit(onSubmit)}

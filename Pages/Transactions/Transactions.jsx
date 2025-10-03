@@ -82,12 +82,12 @@ const Transaction = () => {
   };
 
   return (
-    <div className="w-full my-7">
-      <div className="">
-        <header className="">
-          <h1 className="text-2xl font-bold text-gray-800 lg:mb-5">Transaction History</h1>
-          <p className="text-gray-600 mt-1">Review a complete log of all past transactions.</p>
-        </header>
+    <div className="max-w-6xl my-7">
+      <div>
+        
+          
+          <p className="mt-1  font-semibold text-xl text-gray-700">Review a complete log of all past transactions.</p>
+        
 
         <main className="bg-white rounded-xl shadow-md overflow-hidden">
           <div className="py-4 border-b border-gray-200 flex flex-col md:flex-row gap-4 md:items-center md:justify-between">

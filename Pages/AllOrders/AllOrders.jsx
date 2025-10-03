@@ -125,9 +125,9 @@ const AllOrders = () => {
   };
 
   return (
-    <div className="w-full my-7">
+    <div className="max-w-6xl my-7">
       <div>
-        <h1 className="text-2xl font-bold text-gray-800 lg:mb-5">All Orders</h1>
+    
 
         <div className="flex flex-col sm:flex-row gap-4 mb-6">
           <input

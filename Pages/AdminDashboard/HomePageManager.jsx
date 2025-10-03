@@ -111,11 +111,11 @@ const HomePageManager = () => {
     const labelStyle = "block text-sm font-medium text-gray-700 mb-1";
 
     return (
-        <div className="w-full my-7">
-            <h1 className="text-2xl font-bold text-gray-800 lg:mb-5">Homepage Banner Management</h1>
+        <div className="max-w-6xl my-7">
+           
 
-            <div className="mb-12">
-                <h2 className="text-xl font-semibold text-gray-700 mb-4">Add New Banner Slide</h2>
+            <div className="mb-10">
+                <h2 className=" mt-1  font-semibold text-xl text-gray-700">Add New Banner Slide</h2>
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 p-6 border border-gray-200 rounded-lg bg-gray-50">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>

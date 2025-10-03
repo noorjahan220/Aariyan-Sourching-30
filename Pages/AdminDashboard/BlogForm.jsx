@@ -207,9 +207,9 @@ const BlogForm = ({ blogToEdit, onFormSubmit, onCancel }) => {
   };
 
   return (
-    <div className="w-full my-7">
+    <div className="max-w-6xl my-7">
       <Toaster position="top-right" />
-      <h1 className="text-2xl font-bold text-gray-800 lg:mb-5">{isEditing ? "Edit Blog" : "Add New Blog"}</h1>
+     
       <div className="bg-white p-8 rounded-lg shadow-sm border border-gray-200">
         <form onSubmit={handleSubmit(onSubmit)}>
           {/* Main Blog Details */}

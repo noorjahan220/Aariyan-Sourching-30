@@ -87,9 +87,9 @@ const BlogCategory = () => {
   if (loading) return <LoadingSpinner></LoadingSpinner>;
 
   return (
-    <div className="w-full my-7">
+    <div className="max-w-6xl my-7">
       <Toaster position="top-right" />
-      <h1 className="text-2xl font-bold text-gray-800 lg:mb-5">Blog Categories</h1>
+      
 
       <div className="bg-white p-8 rounded-lg shadow-sm border border-gray-200 w-full mb-8">
         <h3 className="text-lg font-semibold mb-3">Add New Category</h3>

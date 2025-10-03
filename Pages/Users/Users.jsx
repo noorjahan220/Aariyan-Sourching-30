@@ -85,8 +85,8 @@ function Users() {
   const totalPages = data?.totalPages || 0;
 
   return (
-    <div className="w-full my-7">
-      <h1 className="text-2xl font-bold text-gray-800 lg:mb-5">All Users</h1>
+    <div className="max-w-6xl my-7">
+     
       <div className="mb-6">
         <input
           type="text"

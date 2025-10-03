@@ -103,8 +103,8 @@ const handleDelete = (size) => {
     "w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 capitalize";
 
   return (
-    <div className="max-w-6xl ">
-      <h1 className="text-2xl font-bold text-gray-800 lg:mb-5">Add Size</h1>
+    <div className="max-w-6xl my-7">
+      
 
       <form
         onSubmit={handleSubmit(onSubmit)}

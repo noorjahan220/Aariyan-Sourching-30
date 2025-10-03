@@ -37,8 +37,8 @@ function Staff({ staff: staffData = [], onDeleteStaff = () => {} }) {
     };
 
     return (
-        <div className="w-full my-7">
-            <h1 className="text-2xl font-bold text-gray-800 lg:mb-5">All Staff</h1>
+        <div className="max-w-6xl my-7">
+           
             <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
                 <input
                     type="text"

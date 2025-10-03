@@ -108,11 +108,11 @@ const SizeGuideManager = () => {
     };
 
     return (
-        <div className="w-full my-7">
-            <h1 className="text-2xl font-bold text-gray-800 lg:mb-5">Size Guide Management</h1>
+        <div className="max-w-6xl my-7">
+            
 
             <div className="mb-12">
-                <h2 className="text-xl font-semibold text-gray-700 mb-4">Add New Size Chart Image</h2>
+                <h2 className="mt-1  font-semibold text-xl text-gray-700">Add New Size Chart Image</h2>
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 p-6 border border-gray-200 rounded-lg bg-gray-50">
                     <div>
                          <label htmlFor="image" className="block text-sm font-medium text-gray-700 mb-1">Upload Image</label>

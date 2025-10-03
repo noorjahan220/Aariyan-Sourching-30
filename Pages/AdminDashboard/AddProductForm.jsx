@@ -94,11 +94,9 @@ const AddProductForm = () => {
     "p-6 border border-gray-200 rounded-lg bg-gray-50";
 
   return (
-    <div className="w-full my-7 flex">
+    <div className="max-w-6xl my-7 flex">
       <div className="w-full">
-        <h1 className="text-2xl font-bold text-gray-800 lg:mb-5">
-          Add New Product
-        </h1>
+       
 
         <form
           onSubmit={handleSubmit(handleProductSubmit)}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState } from "react";
 
 // Mock data for messages
 const conversations = [
@@ -9,45 +9,46 @@ const conversations = [
     customer: {
       name: "Sarah Johnson",
       avatar: "/api/placeholder/40/40",
-      lastActive: "2 hours ago"
+      lastActive: "2 hours ago",
     },
-    lastMessage: "Hi, I'm interested in the summer linen dress. Do you have it in size M?",
+    lastMessage:
+      "Hi, I'm interested in the summer linen dress. Do you have it in size M?",
     unread: 3,
-    date: "2023-06-15T14:30:00Z"
+    date: "2023-06-15T14:30:00Z",
   },
   {
     id: 2,
     customer: {
       name: "Michael Chen",
       avatar: "/api/placeholder/40/40",
-      lastActive: "5 hours ago"
+      lastActive: "5 hours ago",
     },
     lastMessage: "When will my order #ORD-7842 be shipped?",
     unread: 0,
-    date: "2023-06-15T10:15:00Z"
+    date: "2023-06-15T10:15:00Z",
   },
   {
     id: 3,
     customer: {
       name: "Emma Wilson",
       avatar: "/api/placeholder/40/40",
-      lastActive: "1 day ago"
+      lastActive: "1 day ago",
     },
     lastMessage: "Thanks for your help with the return process!",
     unread: 0,
-    date: "2023-06-14T16:45:00Z"
+    date: "2023-06-14T16:45:00Z",
   },
   {
     id: 4,
     customer: {
       name: "James Rodriguez",
       avatar: "/api/placeholder/40/40",
-      lastActive: "2 days ago"
+      lastActive: "2 days ago",
     },
     lastMessage: "Do you offer custom tailoring services?",
     unread: 1,
-    date: "2023-06-13T09:20:00Z"
-  }
+    date: "2023-06-13T09:20:00Z",
+  },
 ];
 
 const messagesData = {
@@ -55,79 +56,82 @@ const messagesData = {
     {
       id: 1,
       sender: "customer",
-      content: "Hi, I'm interested in the summer linen dress. Do you have it in size M?",
-      timestamp: "2023-06-15T14:30:00Z"
+      content:
+        "Hi, I'm interested in the summer linen dress. Do you have it in size M?",
+      timestamp: "2023-06-15T14:30:00Z",
     },
     {
       id: 2,
       sender: "admin",
-      content: "Hello Sarah! Yes, we have the linen dress in size M. It's currently in stock.",
-      timestamp: "2023-06-15T14:35:00Z"
+      content:
+        "Hello Sarah! Yes, we have the linen dress in size M. It's currently in stock.",
+      timestamp: "2023-06-15T14:35:00Z",
     },
     {
       id: 3,
       sender: "customer",
       content: "That's great! What about the color options?",
-      timestamp: "2023-06-15T14:40:00Z"
+      timestamp: "2023-06-15T14:40:00Z",
     },
     {
       id: 4,
       sender: "admin",
-      content: "We have it in beige, navy blue, and olive green. Which color are you interested in?",
-      timestamp: "2023-06-15T14:42:00Z"
+      content:
+        "We have it in beige, navy blue, and olive green. Which color are you interested in?",
+      timestamp: "2023-06-15T14:42:00Z",
     },
     {
       id: 5,
       sender: "customer",
-      content: "I think the olive green would be perfect for summer. Can you hold one for me?",
-      timestamp: "2023-06-15T14:45:00Z"
-    }
-  ]
+      content:
+        "I think the olive green would be perfect for summer. Can you hold one for me?",
+      timestamp: "2023-06-15T14:45:00Z",
+    },
+  ],
 };
 
 const Messages = () => {
   const [selectedConversation, setSelectedConversation] = useState(null);
-  const [newMessage, setNewMessage] = useState('');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [view, setView] = useState('conversations'); // 'conversations' or 'chat'
+  const [newMessage, setNewMessage] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [view, setView] = useState("conversations"); // 'conversations' or 'chat'
 
-  const filteredConversations = conversations.filter(conv => 
-    conv.customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    conv.lastMessage.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredConversations = conversations.filter(
+    (conv) =>
+      conv.customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      conv.lastMessage.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleSendMessage = () => {
-    if (newMessage.trim() === '') return;
-    
+    if (newMessage.trim() === "") return;
+
     // In a real app, you would send this message to your backend
     console.log("Sending message:", newMessage);
-    setNewMessage('');
+    setNewMessage("");
   };
 
   const formatTime = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   };
 
   const handleSelectConversation = (id) => {
     setSelectedConversation(id);
-    setView('chat');
+    setView("chat");
   };
 
   const handleBackToConversations = () => {
-    setView('conversations');
+    setView("conversations");
   };
 
   return (
-    <div className="w-full my-7">
-      {/* Header */}
-      <div className="bg-white border-b border-gray-200 p-4">
-        <h1 className="text-2xl font-bold text-gray-800 lg:mb-5">Messages</h1>
-        <p className="text-sm text-gray-500">Manage customer inquiries and conversations</p>
-      </div>
+    <div className="max-w-6xl my-7">
+      <p className="mt-1  font-semibold text-xl text-gray-700">
+        Manage customer inquiries and conversations
+      </p>
 
       <div className="flex-1 overflow-hidden">
-        {view === 'conversations' ? (
+        {view === "conversations" ? (
           /* Conversation List View */
           <div className="bg-white h-full overflow-y-auto">
             <div className="p-4 border-b border-gray-200 sticky top-0 bg-white z-10">
@@ -191,9 +195,9 @@ const Messages = () => {
                       <div className="flex items-center mt-1">
                         <span
                           className={`inline-block w-2 h-2 rounded-full mr-1 ${
-                            conversation.customer.lastActive.includes('hour') 
-                              ? 'bg-green-500' 
-                              : 'bg-gray-400'
+                            conversation.customer.lastActive.includes("hour")
+                              ? "bg-green-500"
+                              : "bg-gray-400"
                           }`}
                         ></span>
                         <span className="text-xs text-gray-500">
@@ -211,36 +215,75 @@ const Messages = () => {
           <div className="flex flex-col h-full">
             {/* Chat Header */}
             <div className="bg-white border-b border-gray-200 p-4 flex items-center">
-              <button 
+              <button
                 onClick={handleBackToConversations}
                 className="mr-3 p-1 text-gray-500 hover:text-gray-700 rounded-lg hover:bg-gray-100"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M15 19l-7-7 7-7"
+                  />
                 </svg>
               </button>
               <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center mr-3">
                 <span className="text-gray-600 font-medium">
-                  {conversations.find(c => c.id === selectedConversation)?.customer.name.charAt(0)}
+                  {conversations
+                    .find((c) => c.id === selectedConversation)
+                    ?.customer.name.charAt(0)}
                 </span>
               </div>
               <div className="flex-1">
                 <h3 className="font-semibold text-gray-900">
-                  {conversations.find(c => c.id === selectedConversation)?.customer.name}
+                  {
+                    conversations.find((c) => c.id === selectedConversation)
+                      ?.customer.name
+                  }
                 </h3>
                 <p className="text-sm text-gray-500">
-                  Last active: {conversations.find(c => c.id === selectedConversation)?.customer.lastActive}
+                  Last active:{" "}
+                  {
+                    conversations.find((c) => c.id === selectedConversation)
+                      ?.customer.lastActive
+                  }
                 </p>
               </div>
               <div className="flex space-x-2">
                 <button className="p-2 text-gray-500 hover:text-gray-700 rounded-lg hover:bg-gray-100">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                    />
                   </svg>
                 </button>
                 <button className="p-2 text-gray-500 hover:text-gray-700 rounded-lg hover:bg-gray-100">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M12 4v16m8-8H4"
+                    />
                   </svg>
                 </button>
               </div>
@@ -252,17 +295,27 @@ const Messages = () => {
                 {messagesData[selectedConversation]?.map((message) => (
                   <div
                     key={message.id}
-                    className={`flex ${message.sender === 'admin' ? 'justify-end' : 'justify-start'}`}
+                    className={`flex ${
+                      message.sender === "admin"
+                        ? "justify-end"
+                        : "justify-start"
+                    }`}
                   >
                     <div
                       className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
-                        message.sender === 'admin'
-                          ? 'bg-yellow-500 text-white'
-                          : 'bg-white border border-gray-200 text-gray-800'
+                        message.sender === "admin"
+                          ? "bg-yellow-500 text-white"
+                          : "bg-white border border-gray-200 text-gray-800"
                       }`}
                     >
                       <p>{message.content}</p>
-                      <p className={`text-xs mt-1 ${message.sender === 'admin' ? 'text-yellow-100' : 'text-gray-500'}`}>
+                      <p
+                        className={`text-xs mt-1 ${
+                          message.sender === "admin"
+                            ? "text-yellow-100"
+                            : "text-gray-500"
+                        }`}
+                      >
                         {formatTime(message.timestamp)}
                       </p>
                     </div>
@@ -280,7 +333,7 @@ const Messages = () => {
                   className="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                  onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
                 />
                 <button
                   className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2"

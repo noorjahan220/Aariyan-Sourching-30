@@ -56,8 +56,7 @@ const AllBlogs = ({ categories }) => {
     return () => clearTimeout(debounceTimer);
   }, [fetchBlogs]); 
 
-  // --- THIS IS THE UPDATED DELETE LOGIC ---
-  // It no longer shows a confirmation toast. It just performs the deletion.
+
   const handleDeleteBlog = async (blogId) => {
     const deletePromise = axiosSecure.delete(`/blogs/${blogId}`);
 
@@ -66,7 +65,6 @@ const AllBlogs = ({ categories }) => {
       {
         loading: 'Deleting blog...',
         success: () => {
-          // You can either filter the state or refetch. Refetching is safer for pagination.
           fetchBlogs(); 
           return "Blog deleted successfully!";
         },
@@ -81,9 +79,9 @@ const AllBlogs = ({ categories }) => {
   };
 
   return (
-    <div className='w-full my-7'>
+    <div className='max-w-6xl my-7'>
       <Toaster position="top-right" />
-      <h1 className="text-2xl font-bold text-gray-800 lg:mb-5">All Blogs</h1>
+      
 
       <BlogList
         blogs={blogs} 
@@ -95,11 +93,11 @@ const AllBlogs = ({ categories }) => {
         setSelectedCategory={setSelectedCategory}
         onView={setViewBlog}
         onEdit={setEditingBlog}
-        // Pass the updated logic function to the child component
+       
         onDelete={handleDeleteBlog}
       />
 
-      {/* ===== Pagination Controls ===== */}
+ 
       {totalPages > 1 && (
         <div className="flex justify-center items-center gap-4 mt-8">
           <button

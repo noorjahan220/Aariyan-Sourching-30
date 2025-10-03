@@ -111,10 +111,8 @@ const handleDelete = (brand) => {
   const labelStyle = "block text-sm font-medium text-gray-700 mb-1";
 
   return (
-    <main className="max-w-6xl ">
-      <h1 className="text-2xl font-bold text-gray-800 lg:mb-5">
-        Add Brand
-      </h1>
+    <main className="max-w-6xl my-7">
+     
 
       <form
         onSubmit={handleSubmit(onSubmit)}

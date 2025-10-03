@@ -62,14 +62,14 @@ const AccountDetailsForm = () => {
         } catch (error) {
           console.log(error.message); // Debugging
 
-          // Firebase এ current password ভুল হলে এইভাবে চেক করতে পারেন
+     
           if (error.code === "auth/wrong-password") {
             toast.error("Current password is wrong!");
           } else {
             toast.error(error.message || "Password change failed!");
           }
 
-          return; // Stop further execution
+          return; 
         }
       }
 
@@ -83,30 +83,31 @@ const AccountDetailsForm = () => {
   };
 
   return (
-    <div className="w-full mt-7">
-      <h2 className="text-2xl font-bold text-gray-800 lg:mb-5">
-        Account Details
-      </h2>
+    <div className="max-w-6xl my-7">
+      <div className="mb-6">
+        
+        <p className="mt-1 text-sm text-gray-500">Update your profile information and password.</p>
+      </div>
 
       <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Name */}
           <div>
-            <label htmlFor="name" className="block mb-2 text-base font-medium text-gray-700">
-              Name<span className="text-red-600">*</span>
+            <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-700">
+              Name <span className="text-red-600">*</span>
             </label>
             <input
               type="text"
               id="name"
               {...register('name', { required: "Name is required" })}
-              className={`bg-white border ${errors.name ? 'border-red-500' : 'border-gray-300'} text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 transition-colors duration-300`}
+              className={`bg-white border ${errors.name ? 'border-red-500' : 'border-gray-300'} text-gray-900 text-sm rounded-lg focus:ring-yellow-500 focus:border-yellow-500 block w-full p-3 transition-colors duration-300`}
             />
-            {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
+            {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>}
           </div>
 
           {/* Email */}
           <div>
-            <label htmlFor="email" className="block mb-2 text-base font-medium text-gray-700">
+            <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-700">
               Email address
             </label>
             <input
@@ -114,91 +115,103 @@ const AccountDetailsForm = () => {
               id="email"
               value={user?.email}
               disabled
-              className="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
+              className="bg-gray-100 border border-gray-300 text-gray-500 text-sm rounded-lg block w-full p-3 cursor-not-allowed"
             />
           </div>
         </div>
 
-        <h3 className="text-lg font-semibold text-gray-800 !mt-10 md:!mt-4 !mb-4">
+        <div className="!mt-8 border-t border-gray-200"></div>
+
+        <h3 className="text-lg font-semibold text-gray-800 pt-2 !mb-4">
           Password Change
         </h3>
 
         {/* Current Password */}
-        <div className="relative">
-          <label htmlFor="current_password" className="block mb-2 text-base font-medium text-gray-700">
-            Current password (leave blank to leave unchanged)
+        <div>
+          <label htmlFor="current_password" className="block mb-2 text-sm font-medium text-gray-700">
+            Current password (leave blank to keep unchanged)
           </label>
-          <input
-            type={showCurrent ? "text" : "password"}
-            id="current_password"
-            {...register('current_password')}
-            placeholder='Enter Your Current Password'
-            className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 pr-10 transition-colors duration-300"
-          />
-          <span
-            onClick={() => setShowCurrent(!showCurrent)}
-            className="absolute top-11 right-3 cursor-pointer text-gray-500"
-          >
-            {showCurrent ? <FaEyeSlash /> : <FaEye />}
-          </span>
+          <div className="relative">
+            <input
+              type={showCurrent ? "text" : "password"}
+              id="current_password"
+              {...register('current_password')}
+              placeholder='Enter your current password'
+              className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-yellow-500 focus:border-yellow-500 block w-full p-3 pr-10 transition-colors duration-300"
+            />
+            <span
+              onClick={() => setShowCurrent(!showCurrent)}
+              className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer text-gray-500"
+              aria-label="Toggle current password visibility"
+            >
+              {showCurrent ? <FaEyeSlash size={16} /> : <FaEye size={16} />}
+            </span>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* New Password */}
-          <div className="relative">
-            <label htmlFor="new_password" className="block mb-2 text-base font-medium text-gray-700">
-              New password (leave blank to leave unchanged)
+          <div>
+            <label htmlFor="new_password" className="block mb-2 text-sm font-medium text-gray-700">
+              New password
             </label>
-            <input
-              type={showNew ? "text" : "password"}
-              id="new_password"
-              {...register('new_password')}
-              placeholder='Enter New Password'
-              className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 pr-10 transition-colors duration-300"
-            />
-            <span
-              onClick={() => setShowNew(!showNew)}
-              className="absolute top-11 right-3 cursor-pointer text-gray-500"
-            >
-              {showNew ? <FaEyeSlash /> : <FaEye />}
-            </span>
+            <div className="relative">
+              <input
+                type={showNew ? "text" : "password"}
+                id="new_password"
+                {...register('new_password')}
+                placeholder='Enter new password'
+                className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-yellow-500 focus:border-yellow-500 block w-full p-3 pr-10 transition-colors duration-300"
+              />
+              <span
+                onClick={() => setShowNew(!showNew)}
+                className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer text-gray-500"
+                aria-label="Toggle new password visibility"
+              >
+                {showNew ? <FaEyeSlash size={16} /> : <FaEye size={16} />}
+              </span>
+            </div>
           </div>
 
           {/* Confirm Password */}
-          <div className="relative">
-            <label htmlFor="confirm_password" className="block mb-2 text-base font-medium text-gray-700">
+          <div>
+            <label htmlFor="confirm_password" className="block mb-2 text-sm font-medium text-gray-700">
               Confirm new password
             </label>
-            <input
-              type={showConfirm ? "text" : "password"}
-              id="confirm_password"
-              {...register('confirm_password')}
-              placeholder='Confirm New Password'
-              className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 pr-10 transition-colors duration-300"
-            />
-            <span
-              onClick={() => setShowConfirm(!showConfirm)}
-              className="absolute top-11 right-3 cursor-pointer text-gray-500"
-            >
-              {showConfirm ? <FaEyeSlash /> : <FaEye />}
-            </span>
+            <div className="relative">
+              <input
+                type={showConfirm ? "text" : "password"}
+                id="confirm_password"
+                {...register('confirm_password')}
+                placeholder='Confirm new password'
+                className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-yellow-500 focus:border-yellow-500 block w-full p-3 pr-10 transition-colors duration-300"
+              />
+              <span
+                onClick={() => setShowConfirm(!showConfirm)}
+                className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer text-gray-500"
+                aria-label="Toggle confirm password visibility"
+              >
+                {showConfirm ? <FaEyeSlash size={16} /> : <FaEye size={16} />}
+              </span>
+            </div>
           </div>
         </div>
 
         {/* Submit Button */}
-        <div className="flex items-center justify-between mt-6">
+        <div className="flex pt-4">
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full md:w-auto px-8 py-3 bg-yellow-400 text-white font-semibold rounded-md 
-                                   hover:bg-yellow-300 hover:text-black 
-                                   transition-all duration-300 flex items-center justify-center text-base"
+            className="w-full sm:w-auto px-8 py-3 bg-yellow-500 text-white font-semibold rounded-lg shadow-sm
+                       hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500
+                       disabled:bg-yellow-300 disabled:cursor-not-allowed
+                       transition-all duration-300 flex items-center justify-center text-base"
           >
             {isSubmitting ? (
-              <div className="flex items-center gap-x-2">
-                <FaSpinner className="animate-spin text-white " />
-                <span>Submitting...</span>
-              </div>
+              <>
+                <FaSpinner className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" />
+                <span>Saving...</span>
+              </>
             ) : (
               "Save Changes"
             )}

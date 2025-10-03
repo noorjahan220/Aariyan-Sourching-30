@@ -159,10 +159,8 @@ const AddProductColour = () => {
   };
 
   return (
-    <main className="w-full my-7">
-      <h1 className="text-2xl font-bold text-gray-800 lg:mb-5">
-        Add New Colour
-      </h1>
+    <main className="max-w-6xl my-7">
+      
 
       <form
         onSubmit={handleSubmit(onSubmit)}

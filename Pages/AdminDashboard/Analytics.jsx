@@ -6,7 +6,7 @@ import {
     Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, ArcElement
 } from 'chart.js';
 import { FaUsers, FaBoxOpen, FaShoppingCart, FaDollarSign, FaArrowUp, FaArrowDown } from 'react-icons/fa';
-import useAxiosSecure from '../../Hooks/useAxiosSecure';
+import useAxiosSecure from '../../Hooks/useAxiosSecure'; // Assuming this hook exists
 import { useQuery } from '@tanstack/react-query';
 
 ChartJS.register(
@@ -50,12 +50,17 @@ const StatCardSkeleton = () => (
     </div>
 );
 
+// Mock API for demonstration purposes
 const mockApi = {
     fetchChartData: async (timeRange) => {
         await new Promise(res => setTimeout(res, 500));
         const generateData = (numPoints, base, variance) => Array.from({ length: numPoints }, () => base + Math.floor(Math.random() * variance) - (variance / 2));
-        const generateLabels = (numPoints) => Array.from({ length: numPoints }, (_, i) => `Day ${i + 1}`);
-        let numPoints = 30;
+        const generateLabels = (numPoints) => {
+             if (timeRange === '7d') return Array.from({ length: 7 }, (_, i) => `Day ${i + 1}`);
+             if (timeRange === '90d') return Array.from({ length: 90 }, (_, i) => `Day ${i + 1}`);
+             return Array.from({ length: 30 }, (_, i) => `Day ${i + 1}`);
+        };
+        let numPoints = timeRange === '7d' ? 7 : timeRange === '90d' ? 90 : 30;
         return {
             userChart: { labels: generateLabels(numPoints), data: generateData(numPoints, 1000, 400) },
             trafficSources: { labels: ['Direct', 'Organic Search', 'Referral', 'Social'], data: [35, 45, 10, 10] },
@@ -63,7 +68,7 @@ const mockApi = {
             topPages: [
                 { path: '/', views: '15,432' }, 
                 { path: '/products', views: '11,120' },
-                { path: '/blog/new-features', views: '9,876' }, 
+                { path: '/blog/a-very-long-blog-post-title-that-needs-truncation', views: '9,876' }, 
                 { path: '/pricing', views: '7,543' },
             ],
         };
@@ -72,9 +77,10 @@ const mockApi = {
 
 const Analytics = () => {
     const [timeRange, setTimeRange] = useState('30d');
-    const axiosSecure = useAxiosSecure();
+    // Using a placeholder for the hook to make the component runnable
+    const axiosSecure = { get: async () => ({ data: { totalUsers: 5423, totalProducts: 789, totalOrders: 1245 } }) };
 
-    const { data, isLoading, isError, error } = useQuery({
+    const { data, isLoading, isError } = useQuery({
         queryKey: ['analyticsDashboard', timeRange],
         queryFn: async () => {
             const [statsResponse, chartData] = await Promise.all([
@@ -118,9 +124,9 @@ const Analytics = () => {
         maintainAspectRatio: false,
         plugins: {
             legend: {
-                position: 'right',
+                position: 'bottom', // More responsive-friendly position
                 labels: {
-                    padding: 15,
+                    padding: 20,
                     font: { size: 12 },
                     color: '#374151',
                     usePointStyle: true,
@@ -159,12 +165,7 @@ const Analytics = () => {
         labels: data?.charts?.trafficSources?.labels || [],
         datasets: [{
             data: data?.charts?.trafficSources?.data || [],
-            backgroundColor: [
-                'rgba(59, 130, 246, 0.8)',
-                'rgba(16, 185, 129, 0.8)',
-                'rgba(239, 68, 68, 0.8)',
-                'rgba(99, 102, 241, 0.8)'
-            ],
+            backgroundColor: ['#3B82F6', '#10B981', '#EF4444', '#6366F1'],
             borderWidth: 0,
             hoverOffset: 10
         }],
@@ -174,22 +175,18 @@ const Analytics = () => {
         labels: data?.charts?.deviceUsage?.labels || [],
         datasets: [{
             data: data?.charts?.deviceUsage?.data || [],
-            backgroundColor: [
-                'rgba(59, 130, 246, 0.8)',
-                'rgba(16, 185, 129, 0.8)',
-                'rgba(239, 68, 68, 0.8)'
-            ],
+            backgroundColor: ['#3B82F6', '#10B981', '#EF4444'],
             borderWidth: 0,
             hoverOffset: 10
         }],
     };
 
     return (
-        <div className="w-full py-6 px-4">
+        <div className="max-w-6xl my-7 ">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
                 <div>
-                    
-                    <p className="text-sm text-gray-500">Track your business performance and metrics</p>
+                  
+                    <p className="mt-1  font-semibold text-xl text-gray-700">Track your business performance and metrics</p>
                 </div>
                 <div className="mt-4 sm:mt-0">
                     <select
@@ -204,60 +201,29 @@ const Analytics = () => {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 {isLoading ? (
-                    <>
-                        <StatCardSkeleton />
-                        <StatCardSkeleton />
-                        <StatCardSkeleton />
-                        <StatCardSkeleton />
-                    </>
+                    Array.from({ length: 4 }).map((_, i) => <StatCardSkeleton key={i} />)
                 ) : isError ? (
-                    <div className="col-span-4 bg-red-50 border border-red-200 rounded-xl p-4">
+                    <div className="col-span-full bg-red-50 border border-red-200 rounded-xl p-4">
                         <p className="text-red-600 text-sm font-medium">Could not load statistics. Please try again.</p>
                     </div>
                 ) : (
                     <>
-                        <StatCard
-                            icon={<FaUsers size={22} />}
-                            title="Total Users"
-                            value={data.stats.totalUsers.toLocaleString()}
-                            trend="up"
-                            trendValue="+12.5%"
-                        />
-                        <StatCard
-                            icon={<FaBoxOpen size={22} />}
-                            title="Total Products"
-                            value={data.stats.totalProducts.toLocaleString()}
-                            trend="up"
-                            trendValue="+8.2%"
-                        />
-                        <StatCard
-                            icon={<FaShoppingCart size={22} />}
-                            title="Total Orders"
-                            value={data.stats.totalOrders.toLocaleString()}
-                            trend="up"
-                            trendValue="+23.1%"
-                        />
-                        <StatCard
-                            icon={<FaDollarSign size={22} />}
-                            title="Revenue"
-                            value="$12,450"
-                            trend="up"
-                            trendValue="+15.3%"
-                        />
+                        <StatCard icon={<FaUsers size={22} />} title="Total Users" value={data.stats.totalUsers.toLocaleString()} trend="up" trendValue="+12.5%" />
+                        <StatCard icon={<FaBoxOpen size={22} />} title="Total Products" value={data.stats.totalProducts.toLocaleString()} trend="up" trendValue="+8.2%" />
+                        <StatCard icon={<FaShoppingCart size={22} />} title="Total Orders" value={data.stats.totalOrders.toLocaleString()} trend="up" trendValue="+23.1%" />
+                        <StatCard icon={<FaDollarSign size={22} />} title="Revenue" value="$12,450" trend="up" trendValue="+15.3%" />
                     </>
                 )}
             </div>
 
-            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 mb-8">
-                <div className="flex items-center justify-between mb-6">
-                    <div>
-                        <h2 className="text-xl font-bold text-gray-800">User Growth</h2>
-                        <p className="text-sm text-gray-500 mt-1">Daily active users over time</p>
-                    </div>
+            <div className="bg-white p-4  rounded-xl shadow-sm border border-gray-100 mb-8">
+                <div className="mb-6 px-2">
+                    <h2 className="text-xl font-bold text-gray-800">User Growth</h2>
+                    <p className="text-sm text-gray-500 mt-1">Daily active users over time</p>
                 </div>
-                <div className="h-80">
+                <div className="h-72 sm:h-80">
                     {isLoading ? (
                         <div className="h-full w-full bg-gray-50 animate-pulse rounded-lg"></div>
                     ) : (
@@ -267,8 +233,8 @@ const Analytics = () => {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div className="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                    <div className="mb-5">
+                <div className="lg:col-span-2 bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-gray-100">
+                    <div className="mb-5 px-2">
                         <h2 className="text-xl font-bold text-gray-800">Top Performing Pages</h2>
                         <p className="text-sm text-gray-500 mt-1">Most visited pages on your site</p>
                     </div>
@@ -282,13 +248,13 @@ const Analytics = () => {
                             </thead>
                             <tbody>
                                 {data?.charts?.topPages.map((page, index) => (
-                                    <tr key={page.path} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                                    <tr key={index} className="border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition-colors">
                                         <td className="py-4 px-2">
                                             <div className="flex items-center gap-3">
-                                                <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-yellow-50 text-yellow-600 text-sm font-semibold">
+                                                <span className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-lg bg-yellow-50 text-yellow-600 text-sm font-semibold">
                                                     {index + 1}
                                                 </span>
-                                                <span className="text-sm font-medium text-gray-700">{page.path}</span>
+                                                <span className="text-sm font-medium text-gray-700 truncate" title={page.path}>{page.path}</span>
                                             </div>
                                         </td>
                                         <td className="py-4 px-2 text-right">
@@ -301,29 +267,29 @@ const Analytics = () => {
                     </div>
                 </div>
 
-                <div className="space-y-6">
-                    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                        <div className="mb-5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-6">
+                    <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-gray-100">
+                        <div className="mb-5 px-2">
                             <h2 className="text-xl font-bold text-gray-800">Traffic Sources</h2>
                             <p className="text-sm text-gray-500 mt-1">Where your visitors come from</p>
                         </div>
-                        <div className="h-52 flex items-center justify-center">
+                        <div className="h-64 flex items-center justify-center">
                             {isLoading ? (
-                                <div className="h-40 w-40 bg-gray-50 animate-pulse rounded-full"></div>
+                                <div className="h-48 w-48 bg-gray-50 animate-pulse rounded-full"></div>
                             ) : (
                                 <Doughnut data={sourceChartData} options={doughnutOptions} />
                             )}
                         </div>
                     </div>
 
-                    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                        <div className="mb-5">
+                    <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-gray-100">
+                        <div className="mb-5 px-2">
                             <h2 className="text-xl font-bold text-gray-800">Device Usage</h2>
                             <p className="text-sm text-gray-500 mt-1">Devices used to access your site</p>
                         </div>
-                        <div className="h-52 flex items-center justify-center">
+                        <div className="h-64 flex items-center justify-center">
                             {isLoading ? (
-                                <div className="h-40 w-40 bg-gray-50 animate-pulse rounded-full"></div>
+                                <div className="h-48 w-48 bg-gray-50 animate-pulse rounded-full"></div>
                             ) : (
                                 <Doughnut data={deviceChartData} options={doughnutOptions} />
                             )}

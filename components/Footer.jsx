@@ -30,19 +30,19 @@ const Footer = () => {
         <div className=" w-full lg:w-[30%] py-10 sm:py-14 ">
           <Image className="bg-[#F6F6F6]" src={footerLogo} alt="App Store" width={250} height={100} />
 
-          <h3 className="text-sm sm:text-base lg:text-[16px] font-semibold sub_title_color my-5 uppercase">
+          <h3 className="text-sm  lg:text-[0.8rem] font-semibold sub_title_color my-5 uppercase">
             QUESTION OR FEEDBACK?
           </h3>
           <div className="flex items-center gap-2 my-2">
             <FaPhoneAlt />
-            <span className="text-sm sm:text-base font-medium mr-2">
-              +018 900 6690
+            <span className="text-sm sm:text-base  mr-2">
+              +8801713117849
             </span>
           </div>
           <div className="flex items-center gap-2 my-2">
             <MdEmail />
-            <span className="text-sm sm:text-base font-medium">
-              support@ariya.com
+            <span className="text-sm sm:text-base ">
+              aaryansourcing@gmail.com
             </span>
           </div>
 
@@ -64,7 +64,7 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="w-full lg:w-[70%] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-10 py-10 sm:py-14 ">
+        <div className="w-full lg:w-[70%] grid grid-cols-2  md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-10 py-10 sm:py-14 ">
           <div>
             <div className="mb-6 sm:mb-10">
               <h3 className="text-xs sm:text-sm font-bold tracking-wide uppercase">
