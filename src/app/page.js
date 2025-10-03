@@ -5,7 +5,7 @@ export default async function page() {
 
    let slides = [];
   let allProducts = [];
-  let latestArticles = [];
+  let blogs = [];
   let commentCounts = {};
 
   try {
@@ -36,16 +36,18 @@ export default async function page() {
     );
     if (res.ok) {
       const data = await res.json();
-      latestArticles = data.blogs || [];
-      if (latestArticles.length > 0) {
+      console.log("blogs",data.blogs)
+      blogs = data.blogs || [];
+      if (blogs.length > 0) {
         const commentsRes = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/comments`,
+         `${process.env.NEXT_PUBLIC_API_BASE_URL}/comments`,
             { next: { revalidate: 10 } }
         );
         if (commentsRes.ok) {
           const allComments = await commentsRes.json();
           commentCounts = allComments.reduce((acc, comment) => {
             const blogId = comment.blogId;
+            console.log("comment",blogId)
             if (blogId) acc[blogId] = (acc[blogId] || 0) + 1;
             return acc;
           }, {});
@@ -58,7 +60,7 @@ export default async function page() {
 
   return (
     <>
-    <Home slides={slides}  allProducts={allProducts} articles={latestArticles} commentCounts={commentCounts}/>
+    <Home slides={slides}  allProducts={allProducts} blogs={blogs} commentCounts={commentCounts}/>
     </>
   )
 }

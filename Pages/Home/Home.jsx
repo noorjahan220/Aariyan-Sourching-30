@@ -15,7 +15,7 @@ import Testimonials from "./Testimonials";
 import Trending from "./Trending";
 import WhyChooseAA from "./whyChooseAA";
 
-const Home = ({slides, allProducts, articles, commentCounts}) => {
+const Home = ({slides, allProducts, blogs, commentCounts}) => {
 
 
   return (
@@ -35,7 +35,7 @@ const Home = ({slides, allProducts, articles, commentCounts}) => {
       <Testimonials />
       <CoreCustomersSection />
       <LatestNewsSection
-        articles={articles}
+        blogs={blogs}
         commentCounts={commentCounts}
       />
       <InstagramFeed />

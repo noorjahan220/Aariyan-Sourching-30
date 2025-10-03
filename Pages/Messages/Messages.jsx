@@ -1,353 +1,279 @@
+// FULL COMPONENT - NOW RESPONSIVE
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { Search, Phone, Send, ArrowLeft } from "lucide-react";
+import io from "socket.io-client";
+import useSingleUser from "../../Hooks/useSingleUser"; // Adjust path if needed
 
-// Mock data for messages
-const conversations = [
-  {
-    id: 1,
-    customer: {
-      name: "Sarah Johnson",
-      avatar: "/api/placeholder/40/40",
-      lastActive: "2 hours ago",
-    },
-    lastMessage:
-      "Hi, I'm interested in the summer linen dress. Do you have it in size M?",
-    unread: 3,
-    date: "2023-06-15T14:30:00Z",
-  },
-  {
-    id: 2,
-    customer: {
-      name: "Michael Chen",
-      avatar: "/api/placeholder/40/40",
-      lastActive: "5 hours ago",
-    },
-    lastMessage: "When will my order #ORD-7842 be shipped?",
-    unread: 0,
-    date: "2023-06-15T10:15:00Z",
-  },
-  {
-    id: 3,
-    customer: {
-      name: "Emma Wilson",
-      avatar: "/api/placeholder/40/40",
-      lastActive: "1 day ago",
-    },
-    lastMessage: "Thanks for your help with the return process!",
-    unread: 0,
-    date: "2023-06-14T16:45:00Z",
-  },
-  {
-    id: 4,
-    customer: {
-      name: "James Rodriguez",
-      avatar: "/api/placeholder/40/40",
-      lastActive: "2 days ago",
-    },
-    lastMessage: "Do you offer custom tailoring services?",
-    unread: 1,
-    date: "2023-06-13T09:20:00Z",
-  },
-];
-
-const messagesData = {
-  1: [
-    {
-      id: 1,
-      sender: "customer",
-      content:
-        "Hi, I'm interested in the summer linen dress. Do you have it in size M?",
-      timestamp: "2023-06-15T14:30:00Z",
-    },
-    {
-      id: 2,
-      sender: "admin",
-      content:
-        "Hello Sarah! Yes, we have the linen dress in size M. It's currently in stock.",
-      timestamp: "2023-06-15T14:35:00Z",
-    },
-    {
-      id: 3,
-      sender: "customer",
-      content: "That's great! What about the color options?",
-      timestamp: "2023-06-15T14:40:00Z",
-    },
-    {
-      id: 4,
-      sender: "admin",
-      content:
-        "We have it in beige, navy blue, and olive green. Which color are you interested in?",
-      timestamp: "2023-06-15T14:42:00Z",
-    },
-    {
-      id: 5,
-      sender: "customer",
-      content:
-        "I think the olive green would be perfect for summer. Can you hold one for me?",
-      timestamp: "2023-06-15T14:45:00Z",
-    },
-  ],
-};
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+let socket;
 
 const Messages = () => {
-  const [selectedConversation, setSelectedConversation] = useState(null);
-  const [newMessage, setNewMessage] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
-  const [view, setView] = useState("conversations"); // 'conversations' or 'chat'
+  const { singleUser, isLoading } = useSingleUser();
 
-  const filteredConversations = conversations.filter(
-    (conv) =>
-      conv.customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      conv.lastMessage.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const [conversations, setConversations] = useState([]);
+  const [selectedConversation, setSelectedConversation] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [messages, setMessages] = useState([]);
+  const [newMessage, setNewMessage] = useState("");
+  
+  const role = singleUser?.role;
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-full p-8">
+        <p className="text-gray-500">Initializing chat...</p>
+      </div>
+    );
+  }
+
+  if (!singleUser) {
+    return (
+      <div className="flex items-center justify-center h-full p-8">
+        <p className="text-red-500">Authentication error. Please log in to view messages.</p>
+      </div>
+    );
+  }
+
+  // HOOK #1: Manages the socket CONNECTION. Runs only ONCE when the user loads.
+  useEffect(() => {
+    if (singleUser?._id) {
+        socket = io(API_URL);
+        socket.on("connect", () => {
+            socket.emit("join", { userId: singleUser._id, role: singleUser.role });
+        });
+        return () => {
+            if (socket) {
+                socket.disconnect();
+            }
+        };
+    }
+  }, [singleUser?._id, singleUser?.role]);
+
+  // HOOK #2: Manages the message LISTENER. Re-runs when state it depends on changes.
+  useEffect(() => {
+    if (!socket) return;
+
+    const messageListener = (incomingMessage) => {
+      const isForAdminInSelectedChat =
+        role === "admin" &&
+        selectedConversation?.userId === incomingMessage.conversationUserId?.toString();
+      
+      const isForCurrentUser = role === "user";
+
+      if (isForAdminInSelectedChat || isForCurrentUser) {
+        setMessages((prevMessages) => [...prevMessages, incomingMessage]);
+      } else if (role === "admin") {
+        setConversations((prevConvos) =>
+          prevConvos.map((convo) => {
+            if (convo.userId === incomingMessage.conversationUserId?.toString()) {
+              return {
+                ...convo,
+                unread: (convo.unread || 0) + 1,
+                lastMessage: incomingMessage.content,
+                lastMessageTimestamp: incomingMessage.timestamp,
+              };
+            }
+            return convo;
+          })
+        );
+      }
+    };
+
+    socket.on("newMessage", messageListener);
+
+    return () => {
+      socket.off("newMessage", messageListener);
+    };
+  }, [role, selectedConversation]);
+
+  // Effect for fetching historical messages (This was already correct).
+  useEffect(() => {
+    const fetchHistory = async () => {
+      try {
+        if (role === "admin") {
+          const response = await fetch(`${API_URL}/api/conversations`);
+          if (!response.ok) return;
+          const data = await response.json();
+          setConversations(data);
+
+          if (selectedConversation) {
+            const msgResponse = await fetch(`${API_URL}/api/conversations/${selectedConversation.userId}`);
+            if (!msgResponse.ok) return;
+            const msgData = await msgResponse.json();
+            setMessages(msgData);
+          }
+        } else if (role === "user" && singleUser?._id) {
+          const response = await fetch(`${API_URL}/api/conversations/${singleUser._id}`);
+          if (!response.ok) return;
+          const data = await response.json();
+          setMessages(data);
+        }
+      } catch (error) {
+        console.error("Error fetching chat history:", error);
+      }
+    };
+    fetchHistory();
+  }, [role, singleUser?._id, selectedConversation]);
 
   const handleSendMessage = () => {
-    if (newMessage.trim() === "") return;
-
-    // In a real app, you would send this message to your backend
-    console.log("Sending message:", newMessage);
+    if (newMessage.trim() === "" || !socket) return;
+    let recipient;
+    if (role === "admin") {
+      if (!selectedConversation) return;
+      recipient = { userId: selectedConversation.userId, role: "user" };
+    } else {
+      recipient = { userId: null, role: "admin" };
+    }
+    const messagePayload = {
+      sender: { userId: singleUser._id, role: singleUser.role },
+      recipient: recipient,
+      content: newMessage,
+    };
+    socket.emit("sendMessage", messagePayload);
+    const optimisticMessage = {
+      senderId: singleUser._id,
+      content: newMessage,
+      timestamp: new Date().toISOString(),
+    };
+    setMessages((prev) => [...prev, optimisticMessage]);
     setNewMessage("");
   };
 
-  const formatTime = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  const handleSelectConversation = (conv) => {
+    setSelectedConversation({ userId: conv.userId, customerName: conv.customerName });
+    setConversations((prevConvos) => prevConvos.map((c) => c.userId === conv.userId ? { ...c, unread: 0 } : c ));
   };
 
-  const handleSelectConversation = (id) => {
-    setSelectedConversation(id);
-    setView("chat");
-  };
-
-  const handleBackToConversations = () => {
-    setView("conversations");
-  };
-
-  return (
-    <div className="max-w-6xl my-7">
-      <p className="mt-1  font-semibold text-xl text-gray-700">
-        Manage customer inquiries and conversations
-      </p>
-
-      <div className="flex-1 overflow-hidden">
-        {view === "conversations" ? (
-          /* Conversation List View */
-          <div className="bg-white h-full overflow-y-auto">
-            <div className="p-4 border-b border-gray-200 sticky top-0 bg-white z-10">
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Search conversations..."
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-                <svg
-                  className="absolute left-3 top-2.5 h-5 w-5 text-gray-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  ></path>
-                </svg>
-              </div>
-            </div>
-
-            <div className="divide-y divide-gray-100">
-              {filteredConversations.map((conversation) => (
-                <div
-                  key={conversation.id}
-                  className="p-4 cursor-pointer hover:bg-gray-50 transition-colors"
-                  onClick={() => handleSelectConversation(conversation.id)}
-                >
-                  <div className="flex items-start space-x-3">
-                    <div className="relative">
-                      <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
-                        <span className="text-gray-600 font-medium">
-                          {conversation.customer.name.charAt(0)}
-                        </span>
-                      </div>
-                      {conversation.unread > 0 && (
-                        <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                          {conversation.unread}
-                        </span>
-                      )}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between">
-                        <h3 className="text-sm font-semibold text-gray-900 truncate">
-                          {conversation.customer.name}
-                        </h3>
-                        <span className="text-xs text-gray-500">
-                          {formatTime(conversation.date)}
-                        </span>
-                      </div>
-                      <p className="text-sm text-gray-600 truncate mt-1">
-                        {conversation.lastMessage}
-                      </p>
-                      <div className="flex items-center mt-1">
-                        <span
-                          className={`inline-block w-2 h-2 rounded-full mr-1 ${
-                            conversation.customer.lastActive.includes("hour")
-                              ? "bg-green-500"
-                              : "bg-gray-400"
-                          }`}
-                        ></span>
-                        <span className="text-xs text-gray-500">
-                          {conversation.customer.lastActive}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+  const filteredConversations = conversations.filter((conv) => conv.customerName?.toLowerCase().includes(searchTerm.toLowerCase()));
+  
+  const renderAdminView = () => (
+    <div className="flex h-full">
+      {/* --- CONVERSATION LIST (Left Pane) --- */}
+      <div
+        className={`
+          ${selectedConversation ? 'hidden md:flex' : 'flex'} w-full md:w-1/3 lg:w-[360px]
+          flex-col bg-white border-r border-gray-200 transition-all duration-300
+        `}
+      >
+        <div className="p-4 border-b border-gray-200 sticky top-0 bg-white z-10">
+          <div className="relative">
+            <input type="text" placeholder="Search conversations..." className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+            <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
           </div>
-        ) : (
-          /* Chat View */
-          <div className="flex flex-col h-full">
-            {/* Chat Header */}
-            <div className="bg-white border-b border-gray-200 p-4 flex items-center">
-              <button
-                onClick={handleBackToConversations}
-                className="mr-3 p-1 text-gray-500 hover:text-gray-700 rounded-lg hover:bg-gray-100"
-              >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M15 19l-7-7 7-7"
-                  />
-                </svg>
-              </button>
-              <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center mr-3">
-                <span className="text-gray-600 font-medium">
-                  {conversations
-                    .find((c) => c.id === selectedConversation)
-                    ?.customer.name.charAt(0)}
-                </span>
-              </div>
-              <div className="flex-1">
-                <h3 className="font-semibold text-gray-900">
-                  {
-                    conversations.find((c) => c.id === selectedConversation)
-                      ?.customer.name
-                  }
-                </h3>
-                <p className="text-sm text-gray-500">
-                  Last active:{" "}
-                  {
-                    conversations.find((c) => c.id === selectedConversation)
-                      ?.customer.lastActive
-                  }
-                </p>
-              </div>
-              <div className="flex space-x-2">
-                <button className="p-2 text-gray-500 hover:text-gray-700 rounded-lg hover:bg-gray-100">
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-                    />
-                  </svg>
-                </button>
-                <button className="p-2 text-gray-500 hover:text-gray-700 rounded-lg hover:bg-gray-100">
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M12 4v16m8-8H4"
-                    />
-                  </svg>
-                </button>
-              </div>
-            </div>
-
-            {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-4 bg-gray-50">
-              <div className="space-y-4">
-                {messagesData[selectedConversation]?.map((message) => (
-                  <div
-                    key={message.id}
-                    className={`flex ${
-                      message.sender === "admin"
-                        ? "justify-end"
-                        : "justify-start"
-                    }`}
-                  >
-                    <div
-                      className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
-                        message.sender === "admin"
-                          ? "bg-yellow-500 text-white"
-                          : "bg-white border border-gray-200 text-gray-800"
-                      }`}
-                    >
-                      <p>{message.content}</p>
-                      <p
-                        className={`text-xs mt-1 ${
-                          message.sender === "admin"
-                            ? "text-yellow-100"
-                            : "text-gray-500"
-                        }`}
-                      >
-                        {formatTime(message.timestamp)}
-                      </p>
-                    </div>
+        </div>
+        <div className="flex-1 overflow-y-auto no-scrollbar divide-y divide-gray-100">
+          {filteredConversations.map((conv) => (
+            <div key={conv._id} className="p-4 cursor-pointer hover:bg-gray-50" onClick={() => handleSelectConversation(conv)}>
+              <div className="flex items-start space-x-3">
+                <div className="relative">
+                  <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center font-semibold shrink-0">
+                    <span>{conv.customerName?.charAt(0)}</span>
                   </div>
-                ))}
+                  {conv.unread > 0 && ( <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">{conv.unread}</span> )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-sm font-semibold truncate">{conv.customerName}</h3>
+                    {conv.lastMessageTimestamp && ( <span className="text-xs text-gray-500">{new Date(conv.lastMessageTimestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span> )}
+                  </div>
+                  <p className="text-sm text-gray-600 truncate mt-1">{conv.lastMessage}</p>
+                </div>
               </div>
             </div>
-
-            {/* Message Input */}
-            <div className="bg-white border-t border-gray-200 p-4">
-              <div className="flex space-x-2">
-                <input
-                  type="text"
-                  placeholder="Type your message..."
-                  className="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
-                  value={newMessage}
-                  onChange={(e) => setNewMessage(e.target.value)}
-                  onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
-                />
-                <button
-                  className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2"
-                  onClick={handleSendMessage}
-                >
-                  Send
-                </button>
-              </div>
-            </div>
+          ))}
+        </div>
+      </div>
+      
+      {/* --- CHAT AREA (Right Pane) --- */}
+      <div className={`${selectedConversation ? 'flex' : 'hidden'} md:flex w-full md:flex-1 flex-col bg-gray-50`}>
+        {selectedConversation ? (
+          <>
+            <ChatHeader onBack={() => { setSelectedConversation(null); setMessages([]); }} name={selectedConversation.customerName} status="Online" />
+            <MessageArea messages={messages} myUserId={singleUser._id} />
+            <MessageInput value={newMessage} onChange={setNewMessage} onSend={handleSendMessage} />
+          </>
+        ) : (
+          <div className="hidden md:flex flex-col items-center justify-center h-full text-center p-4">
+            <p className="text-lg font-medium text-gray-600">Welcome, Admin!</p>
+            <p className="text-sm text-gray-500">Select a conversation from the left to view messages.</p>
           </div>
         )}
       </div>
     </div>
   );
+
+  const renderUserView = () => (
+    <div className="flex flex-col h-full bg-gray-50">
+      <ChatHeader name="Admin Support" status="Typically replies within a few hours" />
+      <MessageArea messages={messages} myUserId={singleUser._id} />
+      <MessageInput value={newMessage} onChange={setNewMessage} onSend={handleSendMessage} />
+    </div>
+  );
+
+  return (
+    <div className="w-full h-[90vh] border border-gray-200 rounded-lg shadow-sm flex flex-col overflow-hidden">
+      <div className="bg-white border-b border-gray-200 p-4 shrink-0">
+        <h1 className="text-2xl font-bold text-gray-800">{role === "admin" ? "All Messages" : "Chat with Support"}</h1>
+        <p className="text-sm text-gray-500">{role === "admin" ? "Manage customer conversations" : "We're here to help!"}</p>
+      </div>
+      <div className="flex-1 overflow-hidden">
+        {role === "admin" ? renderAdminView() : renderUserView()}
+      </div>
+    </div>
+  );
 };
+
+const ChatHeader = ({ name, status, onBack }) => (
+  <div className="bg-white border-b border-gray-200 p-4 flex items-center shrink-0">
+    {onBack && (<button onClick={onBack} className="md:hidden mr-3 p-1 text-gray-500 hover:text-gray-700 rounded-lg hover:bg-gray-100"><ArrowLeft className="w-5 h-5" /></button>)}
+    <div className={`w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center font-semibold shrink-0 ${onBack ? "mr-3" : "mr-4"}`}>
+      <span>{name?.charAt(0)}</span>
+    </div>
+    <div className="flex-1 min-w-0">
+      <h3 className="font-semibold text-gray-900 truncate">{name}</h3>
+      <p className="text-sm text-gray-500 truncate">{status}</p>
+    </div>
+    <button className="p-2 text-gray-500 hover:text-gray-700 rounded-lg hover:bg-gray-100"><Phone className="w-5 h-5" /></button>
+  </div>
+);
+
+const MessageArea = ({ messages, myUserId }) => {
+  const messagesEndRef = useRef(null);
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+  return (
+    <div className="flex-1 overflow-y-auto no-scrollbar p-4">
+      <div className="space-y-4">
+        {messages.map((message, index) => {
+          const isMine = message.senderId === myUserId;
+          return (
+            <div key={index} className={`flex ${isMine ? "justify-end" : "justify-start"}`}>
+              <div className={`max-w-[80%] sm:max-w-[70%] md:max-w-md px-4 py-2 text-base ${isMine ? "bg-yellow-500 text-black rounded-b-3xl rounded-tl-3xl" : "bg-white border border-gray-200 rounded-b-3xl rounded-tr-3xl text-gray-800"}`}>
+                <p className="break-words">{message.content}</p>
+                  <p className={`text-[10px] mt-1 text-right ${isMine ? "text-gray-700" : "text-gray-700"}`}>{new Date(message.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</p>
+              </div>
+            </div>
+          );
+        })}
+        <div ref={messagesEndRef} />
+      </div>
+    </div>
+  );
+};
+
+const MessageInput = ({ value, onChange, onSend }) => (
+  <div className="bg-white border-t border-gray-200 p-2 sm:p-4 shrink-0">
+    <div className="flex space-x-2 sm:space-x-3">
+      <input type="text" placeholder="Type your message..." className="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-yellow-500" value={value} onChange={(e) => onChange(e.target.value)} onKeyPress={(e) => e.key === "Enter" && onSend()} />
+      <button className="bg-yellow-400 font-semibold text-black px-3 sm:px-4 py-2 rounded-lg hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-500 flex items-center justify-center" onClick={onSend}>
+        <Send className="w-4 h-4 sm:mr-2" />
+        <span className="hidden sm:inline">Send</span>
+      </button>
+    </div>
+  </div>
+);
 
 export default Messages;

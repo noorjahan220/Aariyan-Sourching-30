@@ -145,7 +145,7 @@ const Navbar = () => {
   const [allProducts, refetch, isLoading] = useAllProducts();
   const mywishlist = wishlists?.filter((w) => w.email === user?.email);
 
-  /* ---------- BUILD NAVIGATION DATA ---------- */
+   /* ---------- BUILD NAVIGATION DATA ---------- */
   const navigationData = [
     { label: "HOME", href: "/" },
     {
@@ -173,25 +173,25 @@ const Navbar = () => {
             label: "Men",
             src: menImg,
             alt: "Model wearing men's collection",
-            href: "/shop",
+            href: `/shop?category=${encodeURIComponent("Men")}`,
           },
           {
             label: "Children's",
             src: kidsImg,
             alt: "Model wearing children's collection",
-            href: "/shop",
+           href: `/shop?category=${encodeURIComponent("Children")}`,
           },
           {
             label: "Women",
             src: womenImg,
             alt: "Model wearing women's collection",
-            href: "/shop",
+            href: `/shop?category=${encodeURIComponent("Women")}`,
           },
           {
             label: "Unisex",
             src: fullCollection,
             alt: "Model wearing unisex collection",
-            href: "/shop",
+            href: `/shop?category=${encodeURIComponent("unisex")}`,
           },
         ],
       },
@@ -199,6 +199,7 @@ const Navbar = () => {
     { label: "RESOURCES", href: "/resource" },
     { label: "COLORS", href: "/colors" },
   ];
+
 
   /* ---------- EFFECTS ---------- */
   useEffect(() => {
@@ -458,7 +459,7 @@ const Navbar = () => {
           <div className="p-5 flex justify-between items-center flex-shrink-0 border-b border-gray-200">
             <div className="text-3xl font-bold text-gray-800">
               <Link href="/" onClick={() => setIsMenuOpen(false)}>
-                Ayira
+                 <Image alt="logo" src={navbarLogo} width={120} height={50} />
               </Link>
             </div>
             <button

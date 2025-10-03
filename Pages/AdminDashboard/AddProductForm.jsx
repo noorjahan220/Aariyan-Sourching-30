@@ -38,6 +38,8 @@ const AddProductForm = () => {
   const { handleProductSubmit } = useProductSubmit(reset);
 
   const attribute = useProductAttributesData();
+  console.log(attribute);
+  
 
   // FIX: Provide default empty arrays to prevent .map() on undefined
   const {
@@ -95,7 +97,7 @@ const AddProductForm = () => {
 
   return (
     <div className="max-w-6xl my-7 flex">
-      <div className="w-full">
+      <div className="">
        
 
         <form
@@ -204,6 +206,31 @@ const AddProductForm = () => {
                   </p>
                 )}
               </div>
+       <div>
+                <label htmlFor="productStatus" className={labelStyle}>
+                  Product Status
+                </label>
+                <select
+                  id="productStatus"
+                  {...register("productStatus", {
+                    required: "Please select a Product Status",
+                  })}
+                  className={inputStyle}
+                >
+                  <option value="">Select Product Status</option>
+                  <option value="new_arrivals">New Arrivals</option>
+                  <option value="featured">Featured</option>
+                  <option value="trending">Trending</option>
+                  <option value="favourite">Favourite</option>
+                 
+                </select>
+                {errors.productStatus && (
+                  <p className={errorMsgClass}>
+                    {errors.productStatus.message}
+                  </p>
+                )}
+              </div>
+
             </div>
           </div>
 
