@@ -2,11 +2,13 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { FaExclamationTriangle, FaSpinner, FaTrash } from "react-icons/fa";
-import useAxiosSecure from "../../Hooks/useAxiosSecure";
 import toast from "react-hot-toast";
 import useProductAttributesData from "../../Hooks/useProductAttributesData";
-import LoadingSpinner from "../../components/LoadingSpinner";
-import { useRouter } from "next/navigation";
+
+import {
+  addCategoryServer,
+  deleteCategoryServer,
+} from "../../lib/categoryActions";
 
 const AddCategory = () => {
   const {
@@ -16,101 +18,69 @@ const AddCategory = () => {
     formState: { isSubmitting, errors },
   } = useForm();
 
-  const { productCategory } =
-    useProductAttributesData();
+  const { productCategory } = useProductAttributesData();
 
-  const axiosSecure = useAxiosSecure();
-  const router = useRouter();
-  
   // Add category
   const onSubmit = async (data) => {
+    const key = "category";
+    const value = data.catagory;
     try {
-      const formData = {
-        key: "category",
-        value: data.catagory,
-      };
+      const result = await addCategoryServer(key, value);
 
-      const res = await axiosSecure.post("/post-productAttribute", formData);
-
-      const result = res.data;
-
-      if (result.acknowledged == true && result.modifiedCount > 0) {
-        toast.success("New category created successfully.", {
-          duration: 2000,
-        });
-        router.refresh()
+      if (result.modifiedCount > 0) {
+        toast.success("New category created successfully.", { duration: 2000 });
       } else {
         toast.error("Something went wrong!");
       }
     } catch (error) {
       console.error(error);
-      toast.error(
-        error?.response?.data?.error || error.message || "Failed to add category"
-      );
+      toast.error(error.message || "Failed to add category");
     } finally {
       reset();
     }
   };
 
-const handleDelete = (cat) => {
-  toast((t) => (
-    // Using the design from the first example
-    <div className="flex flex-col items-center gap-4 p-4 bg-white shadow-lg rounded-md">
-      <div className="flex items-center gap-3">
-        <FaExclamationTriangle className="text-yellow-500 h-8 w-8 flex-shrink-0" />
-        <div className="text-left">
-          <p className="font-semibold text-gray-800">Delete "{cat.value}"?</p>
-          <p className="text-sm text-gray-600">This action cannot be undone.</p>
+  const handleDelete = (cat) => {
+    toast((t) => (
+      <div className="flex flex-col items-center gap-4 p-4 bg-white shadow-lg rounded-md">
+        <div className="flex items-center gap-3">
+          <FaExclamationTriangle className="text-yellow-500 h-8 w-8 flex-shrink-0" />
+          <div className="text-left">
+            <p className="font-semibold text-gray-800">Delete {cat.value}</p>
+            <p className="text-sm text-gray-600">
+              This action cannot be undone.
+            </p>
+          </div>
         </div>
-      </div>
-      <div className="w-full flex justify-end gap-3">
-        <button
-          onClick={() => toast.dismiss(t.id)}
-          className="px-4 py-1.5 text-sm font-semibold text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors"
-        >
-          Cancel
-        </button>
-        <button
-          // Using the async logic from the second example
-          onClick={async () => {
-            // We can dismiss the confirmation toast immediately or wait. 
-            // The finally block handles it, so we don't need it here.
-            try {
-              const res = await axiosSecure.delete(
-                `/delete-productAttribute/category/${cat.id}`
-              );
-
-              if (res.data.modifiedCount > 0) {
+        <div className="w-full flex justify-end gap-3">
+          <button
+            onClick={() => toast.dismiss(t.id)}
+            className="px-4 py-1.5 text-sm font-semibold text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={async () => {
+              try {
+                await deleteCategoryServer(cat.id);
                 toast.success("Category deleted successfully.", {
                   duration: 2000,
                 });
-              } else {
-                toast.error("Failed to delete category!");
+              } catch (error) {
+                console.error(error);
+                toast.error(error.message || "Delete failed");
+              } finally {
+                toast.dismiss(t.id);
               }
-            } catch (error) {
-              console.error(error);
-              toast.error(
-                error?.response?.data?.error ||
-                  error.message ||
-                  "Delete failed"
-              );
-            } finally {
-              // Ensure the confirmation toast is always dismissed
-              toast.dismiss(t.id);
-            }
-          }}
-          className="px-4 py-1.5 text-sm font-semibold text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors"
-        >
-          Delete
-        </button>
+            }}
+            className="px-4 py-1.5 text-sm font-semibold text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors"
+          >
+            Delete
+          </button>
+        </div>
       </div>
-    </div>
-  ), {
-    // Keep the duration from the first example
-    duration: 6000, 
-  });
-};
-
+    ));
+  };
 
   const inputStyle =
     "w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500";
@@ -118,8 +88,6 @@ const handleDelete = (cat) => {
 
   return (
     <main className="max-w-6xl my-7">
-     
-
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="space-y-6 p-6 border border-gray-200 rounded-lg"
@@ -166,22 +134,24 @@ const handleDelete = (cat) => {
         <h2 className="text-xl font-semibold text-gray-800 mb-6">
           All Categories ({productCategory?.length})
         </h2>
-<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {productCategory.map((cat, index) => (
-              <div
-                key={index}
-                className="flex flex-wrap justify-between items-center bg-white shadow-md border border-gray-100 rounded-lg px-4 py-3 hover:shadow-lg transition"
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {productCategory.map((cat, index) => (
+            <div
+              key={index}
+              className="flex flex-wrap justify-between items-center bg-white shadow-md border border-gray-100 rounded-lg px-4 py-3 hover:shadow-lg transition"
+            >
+              <span className="text-gray-800 font-semibold uppercase text-sm">
+                {cat.value}
+              </span>
+              <button
+                onClick={() => handleDelete(cat)}
+                className="p-2 text-gray-500 rounded-full hover:bg-red-100 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 transition-colors duration-200"
               >
-                <span className="text-gray-800 font-semibold uppercase text-sm">{cat.value}</span>
-                <button
-                  onClick={() => handleDelete(cat)}
-                  className="p-2 text-gray-500 rounded-full hover:bg-red-100 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 transition-colors duration-200"
-                >
-                  <FaTrash className="text-lg" /> 
-                </button>
-              </div>
-            ))}
-          </div>
+                <FaTrash className="text-lg" />
+              </button>
+            </div>
+          ))}
+        </div>
       </section>
     </main>
   );

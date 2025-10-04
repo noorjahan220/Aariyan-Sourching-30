@@ -6,11 +6,8 @@ const AvailableVarients = ({ productId }) => {
   const myProductData = allProducts?.find((data) => data._id === productId);
   const availabelVarients = myProductData?.availabelVarients || [];
 
-  console.log(availabelVarients);
-  
   return (
     <div className="">
-
       <div className="overflow-x-auto">
         <table className="min-w-full border border-gray-200 rounded-lg">
           <thead className="bg-gray-100">
@@ -32,11 +29,14 @@ const AvailableVarients = ({ productId }) => {
                 </td>
 
                 {/* Color Name */}
-                <td className="py-2 px-4 border-b border-gray-100">{variant.colorName}</td>
+                <td className="py-2 px-4 border-b border-gray-100">
+                  {variant.colorName}
+                </td>
 
                 {/* Sizes */}
                 <td className="py-2 px-4 border-b border-gray-100">
-                  {variant.availableSize?.join(", ")}
+                  {/* পরিবর্তন এখানে: join করার আগে map দিয়ে value বের করা হয়েছে */}
+                  {variant.availableSize?.map((size) => size.value).join(", ")}
                 </td>
               </tr>
             ))}

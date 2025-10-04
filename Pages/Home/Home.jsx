@@ -15,7 +15,7 @@ import Testimonials from "./Testimonials";
 import Trending from "./Trending";
 import WhyChooseAA from "./whyChooseAA";
 
-const Home = ({slides, allProducts, blogs, commentCounts}) => {
+const Home = ({slides, allProducts, blogs, commentCounts, featuredData, newarrivalData, trendingData}) => {
 
 
   return (
@@ -23,11 +23,11 @@ const Home = ({slides, allProducts, blogs, commentCounts}) => {
       <Banner slides={slides} /> *
       <QualitySection />
       <CollectionsGrid />
-      <NewArrivals allProducts={allProducts} />
-      <FeaturedCollection allProducts={allProducts} />
+      <NewArrivals allProducts={newarrivalData} />
+      <FeaturedCollection allProducts={featuredData} />
       <Collections />
       <CommitmentsSection />
-      <Trending allProducts={allProducts} />
+      <Trending allProducts={trendingData} />
       <LookbookSection />
       <WhyChooseAA />
       <AtAGlance />

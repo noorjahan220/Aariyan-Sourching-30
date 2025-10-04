@@ -3,13 +3,15 @@ import React, { useState } from "react";
 import { FaExclamationTriangle, FaSpinner, FaTrash } from "react-icons/fa";
 import { SketchPicker } from "react-color";
 import namer from "color-namer";
-import useAxiosSecure from "../../Hooks/useAxiosSecure";
+
 import toast from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import Select from "react-select";
 import useProductAttributesData from "../../Hooks/useProductAttributesData";
-import LoadingSpinner from "../../components/LoadingSpinner";
-import { useRouter } from "next/navigation";
+import {
+  addCategoryServer,
+  deleteColourServer,
+} from "../../lib/categoryActions";
 
 // 150+ common colors
 const colourOptions = [
@@ -38,7 +40,6 @@ const colourOptions = [
 const AddProductColour = () => {
   const [colourCode, setColourCode] = useState("#000000");
   const [colourName, setColourName] = useState("Black");
-  const axiosSecure = useAxiosSecure();
   const { productColour } = useProductAttributesData();
 
   const {
@@ -46,99 +47,94 @@ const AddProductColour = () => {
     formState: { isSubmitting },
   } = useForm();
 
-  const router = useRouter();
+  // const onSubmit = async () => {
+  //   try {
+  //     const formData = {
+  //       key: "ProductColour",
+  //       value: { colourName, colourCode },
+  //     };
+
+  //     const res = await axiosSecure.post("/post-productAttribute", formData);
+  //     const result = res.data;
+
+  //     if (result.acknowledged && result.modifiedCount > 0) {
+  //       toast.success("New colour created successfully.", { duration: 2000 });
+  //       router.refresh();
+  //     } else {
+  //       toast.error("Something went wrong!");
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //     toast.error(
+  //       error?.response?.data?.error || error.message || "Failed to add colour"
+  //     );
+  //   } finally {
+  //     setTimeout(() => {
+  //       setColourCode("#000000");
+  //       setColourName("Black");
+  //     }, 1500);
+  //   }
+  // };
+
   const onSubmit = async () => {
+    const key = "ProductColour";
+    const value = { colourName, colourCode };
     try {
-      const formData = {
-        key: "ProductColour",
-        value: { colourName, colourCode },
-      };
+      const result = await addCategoryServer(key, value);
 
-      const res = await axiosSecure.post("/post-productAttribute", formData);
-      const result = res.data;
-
-      if (result.acknowledged && result.modifiedCount > 0) {
-        toast.success("New colour created successfully.", { duration: 2000 });
-        router.refresh();
+      if (result.modifiedCount > 0) {
+        toast.success("New category created successfully.", { duration: 2000 });
       } else {
         toast.error("Something went wrong!");
       }
     } catch (error) {
       console.error(error);
-      toast.error(
-        error?.response?.data?.error || error.message || "Failed to add colour"
-      );
+      toast.error(error.message || "Failed to add category");
     } finally {
-      setTimeout(() => {
-        setColourCode("#000000");
-        setColourName("Black");
-      }, 1500);
+      reset();
     }
   };
 
   const handleDelete = (col) => {
-    toast(
-      (t) => (
-        // Using the enhanced UI design
-        <div className="flex flex-col items-center gap-4 p-4 bg-white shadow-lg rounded-md">
-          <div className="flex items-center gap-3">
-            <FaExclamationTriangle className="text-yellow-500 h-8 w-8 flex-shrink-0" />
-            <div className="text-left">
-              <p className="font-semibold text-gray-800">
-                Delete "{col.value.colourName}"?
-              </p>
-              <p className="text-sm text-gray-600">
-                This action cannot be undone.
-              </p>
-            </div>
-          </div>
-          <div className="w-full flex justify-end gap-3">
-            <button
-              onClick={() => toast.dismiss(t.id)}
-              className="px-4 py-1.5 text-sm font-semibold text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              // Using the async logic for color deletion
-              onClick={async () => {
-                try {
-                  const res = await axiosSecure.delete(
-                    `/delete-productAttribute/ProductColour/${col.id}`
-                  );
-
-                  if (res.data.modifiedCount > 0) {
-                    toast.success("Colour deleted successfully.", {
-                      duration: 2000,
-                    });
-                   
-                  } else {
-                    toast.error("Failed to delete colour!");
-                  }
-                } catch (error) {
-                  console.error(error);
-                  toast.error(
-                    error?.response?.data?.error ||
-                      error.message ||
-                      "Delete failed"
-                  );
-                } finally {
-                  // Ensure the confirmation toast is always dismissed
-                  toast.dismiss(t.id);
-                }
-              }}
-              className="px-4 py-1.5 text-sm font-semibold text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors"
-            >
-              Delete
-            </button>
+    toast((t) => (
+      <div className="flex flex-col items-center gap-4 p-4 bg-white shadow-lg rounded-md">
+        <div className="flex items-center gap-3">
+          <FaExclamationTriangle className="text-yellow-500 h-8 w-8 flex-shrink-0" />
+          <div className="text-left">
+            <p className="font-semibold text-gray-800">Delete </p>
+            <p className="text-sm text-gray-600">
+              This action cannot be undone.
+            </p>
           </div>
         </div>
-      ),
-      {
-        // The toast will disappear after 6 seconds if not acted upon
-        duration: 6000,
-      }
-    );
+        <div className="w-full flex justify-end gap-3">
+          <button
+            onClick={() => toast.dismiss(t.id)}
+            className="px-4 py-1.5 text-sm font-semibold text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={async () => {
+              try {
+                await deleteColourServer(col.id);
+                toast.success("Category deleted successfully.", {
+                  duration: 2000,
+                });
+              } catch (error) {
+                console.error(error);
+                toast.error(error.message || "Delete failed");
+              } finally {
+                toast.dismiss(t.id);
+              }
+            }}
+            className="px-4 py-1.5 text-sm font-semibold text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    ));
   };
 
   // Handle colour change
@@ -160,8 +156,6 @@ const AddProductColour = () => {
 
   return (
     <main className="max-w-6xl my-7">
-      
-
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="space-y-6 p-6 border border-gray-200 rounded-lg"

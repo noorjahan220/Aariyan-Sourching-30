@@ -9,28 +9,14 @@ import QueryProvider from "../../Context/QueryProvider";
 import { FilterProvider } from "../../Context/FilterContext";
 import GeminiButton from "../../components/ChatGPT/GeminiButton";
 import { Roboto } from "next/font/google";
+import newarrivalData from "../../lib/newarrival";
 const roboto = Roboto({
   variable: "--font-roboto",
   subsets: ["latin"],
   weight: ["400", "500", "700"],
 });
-async function getSiteData() {
-  try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL_ALL}find-products`,
-      { next: { revalidate: 10 } }
-    );
 
-    if (!res.ok) {
-      throw new Error(`Failed to fetch products: ${res.status}`);
-    }
 
-    const data = await res.json();
-    return data;
-  } catch (error) {
-    return [];
-  }
-}
 
 async function getFilterData() {
   try {
@@ -57,7 +43,7 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children }) {
-  const data = await getSiteData();
+  const data = await newarrivalData();
   const filterAttributes = await getFilterData();
 
   return (

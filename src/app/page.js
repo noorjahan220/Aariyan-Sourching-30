@@ -1,5 +1,8 @@
 import React from 'react'
 import Home from '../../Pages/Home/Home'
+import featuredData from '../../lib/featured';
+import newarrivalData from '../../lib/newarrival';
+import trendingData from '../../lib/trending';
 
 export default async function page() {
 
@@ -7,6 +10,11 @@ export default async function page() {
   let allProducts = [];
   let blogs = [];
   let commentCounts = {};
+
+  const featured = await featuredData();
+  const newarrival = await newarrivalData();
+  const trending = await trendingData();
+
 
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/banners`,  { next: { revalidate: 10 } });
@@ -36,7 +44,6 @@ export default async function page() {
     );
     if (res.ok) {
       const data = await res.json();
-      console.log("blogs",data.blogs)
       blogs = data.blogs || [];
       if (blogs.length > 0) {
         const commentsRes = await fetch(
@@ -47,7 +54,6 @@ export default async function page() {
           const allComments = await commentsRes.json();
           commentCounts = allComments.reduce((acc, comment) => {
             const blogId = comment.blogId;
-            console.log("comment",blogId)
             if (blogId) acc[blogId] = (acc[blogId] || 0) + 1;
             return acc;
           }, {});
@@ -60,7 +66,7 @@ export default async function page() {
 
   return (
     <>
-    <Home slides={slides}  allProducts={allProducts} blogs={blogs} commentCounts={commentCounts}/>
+    <Home slides={slides}  allProducts={allProducts} blogs={blogs} commentCounts={commentCounts} featuredData={featured} newarrivalData={newarrival} trendingData={trending}/>
     </>
   )
 }

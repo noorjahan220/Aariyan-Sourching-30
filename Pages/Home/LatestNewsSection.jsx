@@ -90,7 +90,6 @@ const ArticleCard = ({ blog, commentCount }) => {
 // --- Main LatestNewsSection Component ---
 const LatestNewsSection = ({ blogs, commentCounts }) => {
 
-  console.log("blogs",blogs);
 
   // This guard clause is crucial. If the blogs prop is empty, it shows a helpful message.
   if (!blogs || blogs.length === 0) {

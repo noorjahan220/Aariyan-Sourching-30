@@ -182,7 +182,7 @@ const Analytics = () => {
     };
 
     return (
-        <div className="max-w-6xl my-7 ">
+        <div className="w-full my-7 ">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
                 <div>
                   

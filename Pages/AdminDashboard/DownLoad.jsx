@@ -5,7 +5,7 @@ import React from 'react';
 import { FaDownload } from "react-icons/fa";
 
 // Define your server URL, preferably from an environment variable
-const SERVER_URL = "https://api.aaryansourcing.com";
+const SERVER_URL = "http://localhost:5000";
 
 const DownLoad = ({ productId }) => {
     return (

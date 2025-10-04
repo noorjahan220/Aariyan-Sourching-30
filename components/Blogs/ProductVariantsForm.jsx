@@ -1,3 +1,5 @@
+// src/components/Blogs/ProductVariantsForm.jsx
+
 "use client";
 import { useFieldArray, Controller } from "react-hook-form";
 import Select from "react-select";
@@ -8,6 +10,7 @@ const ProductVariantsForm = ({
   errors,
   colorOptions,
   sizeOptions,
+  isEditMode = false,
 }) => {
   const { fields, append, remove } = useFieldArray({
     control,
@@ -33,10 +36,14 @@ const ProductVariantsForm = ({
               <Controller
                 name={`variants.${index}.color`}
                 control={control}
-                rules={{ required: "Color is required for a variant." }} // Added validation
+                rules={{
+                  required: !isEditMode && "Color is required for a variant.",
+                }}
                 render={({ field }) => (
                   <Select
-                    {...field}
+                    // {...field} // <-- এটা আর ব্যবহার করা হবে না
+                    value={field.value} // সরাসরি value ব্যবহার করুন
+                    onChange={(option) => field.onChange(option)} // onChange হ্যান্ডেল করুন
                     options={colorOptions}
                     placeholder="Select Color"
                     className="basic-single"
@@ -56,26 +63,26 @@ const ProductVariantsForm = ({
               <Controller
                 name={`variants.${index}.sizes`}
                 control={control}
-                rules={{ required: "At least one size is required." }} // Added validation
+                rules={{
+                  required: !isEditMode && "At least one size is required.",
+                }}
                 render={({ field }) => (
                   <Select
-                    {...field}
+                    // {...field} // <-- এখানেও এটা আর ব্যবহার করা হবে না
                     isMulti
                     options={sizeOptions}
                     placeholder="Select Sizes"
                     className="basic-multi-select"
                     classNamePrefix="select"
-                    // field.value এখন একটি অ্যারে, তাই react-select-এর জন্য value ফরম্যাট ঠিক করতে হবে
-                    value={sizeOptions.filter((option) =>
-                      (field.value || []).includes(option.value)
-                    )}
-                    onChange={(selectedOptions) =>
-                      field.onChange(
-                        selectedOptions
-                          ? selectedOptions.map((option) => option.value)
-                          : []
-                      )
+                    // সমাধান: value এবং onChange সরাসরি সেট করুন
+                    value={
+                      Array.isArray(field.value)
+                        ? sizeOptions.filter((option) =>
+                            field.value.some((val) => val.value === option.value)
+                          )
+                        : []
                     }
+                    onChange={(options) => field.onChange(options)}
                   />
                 )}
               />
@@ -87,14 +94,12 @@ const ProductVariantsForm = ({
             </div>
           </div>
 
-          {/* --- মূল পরিবর্তন এখানেই --- */}
-          {/* শুধুমাত্র প্রথম আইটেমের পর থেকে ডিলিট বাটন দেখা যাবে */}
           {index > 0 && (
             <button
               type="button"
               onClick={() => remove(index)}
               className="absolute top-2 right-2 p-2 text-red-600 hover:text-red-800 transition-colors"
-              aria-label={`Remove Variant ${index + 1}`} // Accessibility improvement
+              aria-label={`Remove Variant ${index + 1}`}
             >
               <FaTrash />
             </button>

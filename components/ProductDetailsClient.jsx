@@ -10,19 +10,26 @@ import SizeChartModal from "./SizeChartModal";
 import AskAnyQuestionModal from "./AskAnyQuestionModal";
 import WishlistCompare from "../Pages/Shop/WishlistCompare";
 import ProductImageGallery from "./ProductImageGallery";
+import { IoChatbubblesSharp } from "react-icons/io5";
+import { usePathname } from "next/navigation";
+import useAuth from "../Hooks/useAuth";
 
 const img_api = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 const ProductDetailsClient = ({ myProductData }) => {
+  const {user} = useAuth();
+    const pathname = usePathname();
   const sizeChartImg = `${img_api}${myProductData?.sizeChartImage}`;
 
-  const allAvailableSizes = useMemo(() => {
+const allAvailableSizes = useMemo(() => {
     if (!myProductData?.availabelVarients) {
       return [];
     }
-    const sizes = myProductData.availabelVarients.flatMap(
-      (variant) => variant.availableSize
+  
+    const sizes = myProductData.availabelVarients.flatMap((variant) =>
+      variant.availableSize.map((sizeObj) => sizeObj.value)
     );
+  
     return [...new Set(sizes)];
   }, [myProductData]);
 
@@ -84,7 +91,7 @@ const ProductDetailsClient = ({ myProductData }) => {
           </div>
 
           <div>
-            <p className="text-base text-gray-600">
+            <p className="text-base text-gray-600 break-words">
               {myProductData?.shortDescription}
             </p>
           </div>
@@ -152,17 +159,34 @@ const ProductDetailsClient = ({ myProductData }) => {
             Size chart
           </div>
 
-          <Link
-            href="/order"
-            className="w-[180px] py-2 my-4 font-semibold rounded-md bg-[#ffbb42] text-lg capitalize flex justify-center items-center"
-          >
-            shop now
-          </Link>
+            {pathname !== '/admindashboard' && (
+                   <div className="flex gap-5">
+            <Link
+              href="/order"
+              className="w-[180px] py-2 my-4 font-semibold rounded-md bg-[#ffbb42] text-lg capitalize flex justify-center items-center"
+            >
+              shop now
+            </Link>
+            <Link
+              href={user ? "/myaccount?tab=Messages" : "/login"} // Add "?tab=Messages"
+              className="w-[180px] py-2 my-4 font-semibold rounded-md border-2 border-[#ffbb42] hover:bg-[#ffbb42] text-lg capitalize flex justify-center items-center"
+            >
+              <IoChatbubblesSharp></IoChatbubblesSharp>
+              <span className="pl-2">chat now</span>
+            </Link>
+          </div>
+            )
+
+          }
+       
 
           <BrandLogoSwiper
             brandLogo={myProductData?.brandLogo}
             img_api={img_api}
           />
+
+            {pathname !== '/admindashboard' && (
+
 
           <div className="flex justify-between items-center">
             <div>
@@ -175,6 +199,8 @@ const ProductDetailsClient = ({ myProductData }) => {
               Any Questions ?
             </p>
           </div>
+            )}
+
 
           {socialMediaLinks.length > 0 && (
             <div className="mt-6">
@@ -206,10 +232,12 @@ const ProductDetailsClient = ({ myProductData }) => {
         ></SizeChartModal>
       )}
 
-      <AskAnyQuestionModal
+        {pathname !== '/admindashboard' && (
+          <AskAnyQuestionModal
         setIsModalOpen={setIsModalOpen}
         isModalOpen={isModalOpen}
       ></AskAnyQuestionModal>
+        )}
     </main>
   );
 };

@@ -10,26 +10,33 @@ const genderOptions = [
   { value: "Unisex", label: "Unisex" },
 ];
 
-const GenderSizingForm = ({ control, errors, sizeOptions }) => {
+const GenderSizingForm = ({
+  control,
+  errors,
+  sizeOptions,
+  isEditMode = false, // CHANGE: Accept isEditMode prop
+}) => {
   const { fields, append, remove } = useFieldArray({
     control,
     name: "genderSizing",
   });
 
-  // কোন জেন্ডারগুলো ইতোমধ্যে সিলেক্ট করা হয়েছে তা ট্র্যাক করা
-  const selectedGenders = useWatch({
+  const genderSizingValues = useWatch({
     control,
     name: "genderSizing",
-  }).map(item => item.gender?.value);
+  }) || []; // Fallback to empty array is good practice
+
+  const selectedGenders = genderSizingValues.map(
+    (item) => item.gender?.value
+  );
 
   return (
     <div className="space-y-4">
       {fields.map((item, index) => {
-        // প্রতিটি ড্রপডাউনের জন্য অবশিষ্ট জেন্ডার অপশন ফিল্টার করা
         const availableGenderOptions = genderOptions.filter(
           (option) =>
             !selectedGenders.includes(option.value) ||
-            option.value === fields[index].gender?.value
+            option.value === genderSizingValues[index]?.gender?.value
         );
 
         return (
@@ -45,7 +52,8 @@ const GenderSizingForm = ({ control, errors, sizeOptions }) => {
               <Controller
                 name={`genderSizing.${index}.gender`}
                 control={control}
-                rules={{ required: "Gender is required" }}
+                // CHANGE: Conditional validation
+                rules={{ required: !isEditMode && "Gender is required" }}
                 render={({ field }) => (
                   <Select
                     {...field}
@@ -70,7 +78,10 @@ const GenderSizingForm = ({ control, errors, sizeOptions }) => {
               <Controller
                 name={`genderSizing.${index}.sizes`}
                 control={control}
-                rules={{ required: "At least one size is required" }}
+                // CHANGE: Conditional validation
+                rules={{
+                  required: !isEditMode && "At least one size is required",
+                }}
                 render={({ field }) => (
                   <Select
                     {...field}
@@ -87,8 +98,8 @@ const GenderSizingForm = ({ control, errors, sizeOptions }) => {
               )}
             </div>
 
-            {/* Delete Button (শুধুমাত্র প্রথম আইটেমের পর থেকে দেখা যাবে) */}
-            <div className="mt-auto">
+            {/* Delete Button */}
+            <div className="mt-auto self-center sm:self-end pt-5 sm:pt-0">
               {index > 0 && (
                 <button
                   type="button"
@@ -109,7 +120,6 @@ const GenderSizingForm = ({ control, errors, sizeOptions }) => {
         <button
           type="button"
           onClick={() => append({ gender: null, sizes: [] })}
-
           disabled={fields.length >= genderOptions.length}
           className="flex items-center gap-2 px-4 py-2 text-sm text-white bg-[#ffbb42] font-semibold rounded-md shadow-sm hover:bg-amber-500 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
         >

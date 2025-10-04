@@ -2,14 +2,14 @@ import Image from "next/image";
 import CommonBanner from "../../components/CommonBanner";
 
 const Sustainability = () => {
-  const imgSocial1 = "/Sustainability-image/banner.jpg";
-  const imgSocial2 = "/Sustainability-image/Commitment.jpg";
-  const imgSocial3 = "/Sustainability-image/Eco-Friendly.jpg";
-  const imgSocial4 = "/Sustainability-image/Ethical-Fair.jpg";
-  const imgSocial5 = "/Sustainability-image/Reducing-Impact.jpg";
-  const imgEnv1 = "/Sustainability-image/Sustainable-Materials.jpg";
-  const imgEnv2 = "/Sustainability-image/Green.jpg";
-  const imgTech1 = "/Sustainability-image/Social-Fair.jpg";
+  const imgSocial1 = "/sustainability-image/banner.jpg";
+  const imgSocial2 = "/sustainability-image/Commitment.jpg";
+  const imgSocial3 = "/sustainability-image/ecofriendly.jpg";
+  const imgSocial4 = "/sustainability-image/ethicalfair.jpg";
+  const imgSocial5 = "/sustainability-image/reducingimpact.jpg";
+  const imgEnv1 = "/sustainability-image/materials.jpg";
+  const imgEnv2 = "/sustainability-image/green.jpg";
+  const imgTech1 = "/sustainability-image/socialfair.jpg";
 
   const socialComplianceData = [
     {
